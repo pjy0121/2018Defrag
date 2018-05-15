@@ -9,16 +9,28 @@
 #include <string>
 #include <vector>
 #include <glm/glm.hpp>
+#include <Leap.h>
+#include <Windows.h>
 #include "math.h"
+#include "MyListener.h"
 
-const int width_window = 640;
-const int height_window = 480;
+// const int width_window = 640;
+// const int height_window = 480;
+
+const int width_window = 1280;
+const int height_window = 960;
 
 using namespace std;
 using namespace glm;
+using namespace Leap;
 
 int main(void)
 {
+	////// 립 모션 관련 선언
+	Controller controller;
+	MyListener listener;
+	controller.addListener(listener);
+
 	GLFWwindow *window = nullptr;
 
 	/* Initialize the library */
@@ -35,7 +47,7 @@ int main(void)
 	}
 		
 	// callbacks here
-	
+
 
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
@@ -46,11 +58,13 @@ int main(void)
 	glViewport(0, 0, width, height);
 	//glOrtho(0, 1, 0, 1, -1.0, 1.0);
 
+	vector<vec3> buffer;	// 그림의 좌표를 담는 버퍼
+
+	/*
 	// 파일을 읽어들여 그 안의 좌표를 buffer로 옮겨주기
 	string line;
 	ifstream myfile("drawingSample.txt");
 	
-	vector<vec3> buffer;
 	if (myfile.is_open())
 	{
 		string a, b, c;
@@ -61,11 +75,16 @@ int main(void)
 		}
 		myfile.close();
 	}
+	*/
 
+	// 선 두께 조정
 	GLfloat LineRange[2];
 	glGetFloatv(GL_LINE_WIDTH_RANGE, LineRange);
-	glLineWidth(LineRange[1] / 2);
+	// glLineWidth(LineRange[1] / 2);
 
+	glPointSize(10);
+	
+	glRotatef(90, 0.0f, 1.0f, 1.0f);
 	/* Loop until the user closes the window */
 	while (!glfwWindowShouldClose(window))
 	{
@@ -74,14 +93,12 @@ int main(void)
 
 		glRotatef(1, 1.0f, 1.0f, 1.0f);
 		//TODO: draw here
-		glBegin(GL_LINE_LOOP);
-
+		glBegin(GL_POINTS);
 		glColor3f(1.0f, 0.0f, 0.0f);
 
-		for (int i = 0; i < buffer.size(); i++)
-		{
-			glVertex3f(buffer[i].x, buffer[i].y, buffer[i].z);
-		}
+		for(int i=0; i<listener.buf.size(); i++)
+			glVertex3f(listener.buf[i].x, listener.buf[i].y, listener.buf[i].z);
+
 		glEnd();
 
 		/* Swap front and back buffers */

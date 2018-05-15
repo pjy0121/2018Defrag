@@ -9,3 +9,4 @@
 *.suo
 3DRendering/x64/Release/Leap.dll
 *.opendb
+*.idb
