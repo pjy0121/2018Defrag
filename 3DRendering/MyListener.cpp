@@ -4,7 +4,10 @@
 #include <iostream>
 
 glm::vec3 MyListener::color = glm::vec3(1.0f, 0.0f, 0.0f);
-std::vector<glm::vec3> MyListener::buf;
+float MyListener::size = 10.0f;
+std::vector<glm::vec3> MyListener::posBuffer;
+std::vector<glm::vec3> MyListener::colorBuffer;
+std::vector<float> MyListener::sizeBuffer;
 
 void MyListener::onConnect(const Leap::Controller& controller) {
 	std::cout << " Connected" << std::endl;
@@ -39,6 +42,8 @@ void MyListener::onFrame(const Leap::Controller & controller)
 	{
 		glm::vec3 uni = uniform(glm::vec3(tip.x, tip.y, tip.z));	// 정규화된 좌표
 		// std::cout << uni.x << " " << uni.y << " " << uni.z << std::endl;		// 실시간 좌표 출력
-		buf.push_back(uni);		// 버퍼에 넣어줌
+		posBuffer.push_back(uni);		// 버퍼에 넣어줌
+		colorBuffer.push_back(color);
+		sizeBuffer.push_back(size);
 	}
 }

@@ -1,3 +1,5 @@
+// color buffer 필요, 두께 buffer 필요
+
 #include <GL/glew.h>	
 #include <GLFW/glfw3.h>
 #include <cstring>
@@ -26,37 +28,103 @@ using namespace std;
 using namespace glm;
 using namespace Leap;
 
+///// 파일 입출력 관련
 // 파일 쓰기 함수
-void saveFile(const MyListener& L, const vector<vec3>& buffer)
+void saveFile(const MyListener& L)
 {
 	std::ofstream outputFile("output.txt");
-	for (int i = 0; i < buffer.size(); i++)
-		outputFile << buffer[i].x << " " << buffer[i].y << " " << buffer[i].z << std::endl;
-	for (int i = 0; i < L.buf.size(); i++)
-		outputFile << L.buf[i].x << " " << L.buf[i].y << " " << L.buf[i].z << std::endl;
+	for (int i = 0; i < L.posBuffer.size(); i++)
+		outputFile << L.posBuffer[i].x << " " << L.posBuffer[i].y << " " << L.posBuffer[i].z << " " <<	// 점의 위치 저장
+		L.colorBuffer[i].x << " " << L.colorBuffer[i].y << " " << L.colorBuffer[i].z << " " <<		// 점의 색깔 저장
+		L.sizeBuffer[i] << std::endl;	// 점의 크기 저장
 	outputFile.close();
 }
 
+// 파일을 읽어들여 그 안의 좌표를 buffer로 옮겨주기
+void loadFile(const MyListener& L)
+{
+	string line;
+	ifstream inputFile("output.txt");
 
+	if (inputFile.is_open())
+	{
+		string a, b, c, d, e, f, g;
+		while (inputFile >> a >> b >> c >> d >> e >> f >> g)
+		{
+			vec3 pos(stof(a), stof(b), stof(c));	// 파일 안의 좌표들을 float형으로 바꿔서 vec3로 묶음
+			L.posBuffer.push_back(pos);	// buffer에 집어 넣어줌
+			vec3 color(stof(d), stof(e), stof(f));		// 파일 안의 색깔 정보들을 vec3로 묶음
+			L.colorBuffer.push_back(color);	// color buffer에 집어 넣어줌
+			L.sizeBuffer.push_back(stof(g));		// 파일 안의 크기 정보를 size buffer에 집어 넣어줌
+		}
+		inputFile.close();
+	}
+}
+
+// global variables
 Controller controller;
 MyListener listener;
-vector<vec3> filebuffer;	// 이미 존재하는 그림의 좌표를 담는 버퍼
 
-							// key board input callback
+vec3 center(0.0f, 0.0f, 0.0f);
+float rotationDegree = 0.0f;
+
+// key board input callback
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_P && action == GLFW_RELEASE)
-		controller.removeListener(listener);	// Listener 제거 => 멈춤
+		controller.removeListener(listener);	// Listener 제거 => 멈춤(P)
 	else if (key == GLFW_KEY_O && action == GLFW_RELEASE)
-		controller.addListener(listener);	// Listener를 추가 => 그리기 시작
+		controller.addListener(listener);	// Listener를 추가 => 그리기 시작(O)
 	else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
-		saveFile(listener, filebuffer);		// 현재의 그림을 파일로 저장
-	else if (key == GLFW_KEY_C && action == GLFW_RELEASE) {		// 버퍼들 비우기 => 화면 지우기
-		filebuffer.clear();
-		listener.buf.clear();
+		saveFile(listener);		// 현재의 그림을 파일로 저장(S)
+	else if (key == GLFW_KEY_C && action == GLFW_RELEASE) {		// 버퍼들 비우기 => 화면 지우기(C)
+		listener.posBuffer.clear();
+		listener.colorBuffer.clear();
+		listener.sizeBuffer.clear();
 	}
-	else if (key == GLFW_KEY_Q && action == GLFW_RELEASE)
-		glfwTerminate();	// 종료
+	else if (key == GLFW_KEY_Q && action == GLFW_RELEASE) {		// 종료(Q)
+		glfwTerminate();
+		exit(0);
+	}
+
+	// y축 기준 회전 속도 조절(빠르게 : M, 느리게 : N)
+	else if (key == GLFW_KEY_M && action == GLFW_RELEASE)
+		rotationDegree += 1.0f;
+	else if (key == GLFW_KEY_N && action == GLFW_RELEASE)
+		rotationDegree -= 1.0f;
+
+	// 점의 크기(그림 전체의 두께) 설정(굵게 : L, 얇게 : K)
+	else if (key == GLFW_KEY_L && action == GLFW_RELEASE)
+		listener.size += 1.0f;
+	else if (key == GLFW_KEY_K && action == GLFW_RELEASE)
+		listener.size -= 1.0f;
+
+	// 그리기 색깔 설정
+	else if (key == GLFW_KEY_1 && action == GLFW_RELEASE)
+		listener.color = vec3(1.0f, 0.0f, 0.0f);
+	else if (key == GLFW_KEY_2 && action == GLFW_RELEASE)
+		listener.color = vec3(0.0f, 1.0f, 0.0f);
+	else if (key == GLFW_KEY_3 && action == GLFW_RELEASE)
+		listener.color = vec3(0.0f, 0.0f, 1.0f);
+
+	/*
+	// Object 중심점 x, y방향으로 옮기기(방향키)
+	else if (key == GLFW_KEY_UP && action == GLFW_RELEASE)
+		center.x += 0.1f;
+	else if (key == GLFW_KEY_DOWN && action == GLFW_RELEASE)
+		center.x -= 0.1f;
+	else if (key == GLFW_KEY_LEFT && action == GLFW_RELEASE)
+		center.y += 0.1f;
+	else if (key == GLFW_KEY_RIGHT && action == GLFW_RELEASE)
+		center.y -= 0.1f;
+	*/
+}
+
+void drawpoint(vec3 pos, vec3 color, float pointSize)
+{
+	glPointSize(pointSize);
+	glColor3fv(&color[0]);
+	glVertex3fv(&pos[0]);
 }
 
 int main()
@@ -82,7 +150,7 @@ int main()
 	glfwSetKeyCallback(window, key_callback);	// key board input callback
 
 
-												/* Make the window's context current */
+	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
 	glClearColor(1, 1, 1, 1); // white background
 
@@ -91,49 +159,29 @@ int main()
 	glViewport(0, 0, width, height);
 	//glOrtho(0, 1, 0, 1, -1.0, 1.0);
 
-	////// 파일 입출력 관련
-	// 파일을 읽어들여 그 안의 좌표를 buffer로 옮겨주기
-	string line;
-	ifstream inputFile("output.txt");
-
-	if (inputFile.is_open())
-	{
-		string a, b, c;
-		while (inputFile >> a >> b >> c)
-		{
-			vec3 point(stof(a), stof(b), stof(c));	// 파일 안의 좌표들을 float형으로 바꿔서 vec3로 묶음
-			filebuffer.push_back(point);	// buffer에 집어 넣어줌
-		}
-		inputFile.close();
-	}
-
 	////// 선 두께, 점 크기 조정 관련
 	GLfloat LineRange[2];
 	glGetFloatv(GL_LINE_WIDTH_RANGE, LineRange);
 	// glLineWidth(LineRange[1] / 2);
-	glPointSize(10);
+	
+	loadFile(listener);		// 파일 불러오기
 
 	// 윈도우가 닫힐 때까지 반복
 	while (!glfwWindowShouldClose(window))
 	{
+		glPointSize(listener.size);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glRotatef(1, 0.0f, 1.0f, 0.0f);
+		glTranslatef(center.x, center.y, center.z);
+		glRotatef(rotationDegree, 0.0f, 1.0f, 0.0f);
 
 		////// 그림 그리는 부분
 		glBegin(GL_POINTS);
 		glColor3f(1.0f, 0.0f, 0.0f);	// default color
 
-										// 읽은 파일이 있으면 파일을 출력
-		if (!filebuffer.empty())
-		{
-			for (int i = 0; i < filebuffer.size(); i++)
-				glVertex3f(filebuffer[i].x, filebuffer[i].y, filebuffer[i].z);
-		}
 		// 파일이 없으면 빈 화면에서 시작
-		for (int i = 0; i < listener.buf.size(); i++) {
-			glVertex3f(listener.buf[i].x, listener.buf[i].y, listener.buf[i].z);
-		}
+		for (int i = 0; i < listener.posBuffer.size(); i++)
+			drawpoint(listener.posBuffer[i], listener.colorBuffer[i], listener.sizeBuffer[i]);
 		glEnd();
 
 		/* Swap front and back buffers(Double buffering) */

@@ -6,8 +6,11 @@
 class MyListener : public Leap::Listener {
 public:
 	static glm::vec3 color;
-	static std::vector<glm::vec3> buf;
-
+	static float size;
+	static std::vector<glm::vec3> posBuffer;
+	static std::vector<glm::vec3> colorBuffer;
+	static std::vector<float> sizeBuffer;
+ 
 	virtual void onConnect(const Leap::Controller&);
 	virtual void onFrame(const Leap::Controller&);
 	virtual void onInit(const Leap::Controller&);
