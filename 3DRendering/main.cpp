@@ -149,37 +149,65 @@ void drawpoint(vec3 pos, vec3 color, float pointSize)
 	glVertex3fv(&pos[0]);
 }
 
+void drawScene(GLFWwindow *window)
+{
+	glPointSize(listener.size);
+	glClear(GL_COLOR_BUFFER_BIT);
+
+	glTranslatef(center.x, center.y, center.z);
+	glRotatef(rotationDegreeY, 0.0f, 1.0f, 0.0f);
+	glRotatef(rotationDegreeX, 1.0f, 0.0f, 0.0f);
+
+	glScalef(scaleSize, scaleSize, scaleSize);	// 확대 및 축소
+
+												////// 그림 그리는 부분
+	glBegin(GL_POINTS);
+	glColor3f(1.0f, 0.0f, 0.0f);	// default color
+
+									// 파일이 없으면 빈 화면에서 시작
+	for (int i = 0; i < listener.posBuffer.size(); i++)
+	{
+		drawpoint(listener.posBuffer[i], listener.colorBuffer[i], listener.sizeBuffer[i]);
+	}
+
+	drawpoint(listener.currentPos, vec3(0.0f, 1.0f, 0.0f), 1);
+
+	glEnd();
+
+	/* Swap front and back buffers(Double buffering) */
+	glfwSwapBuffers(window);
+
+	/* OS 이벤트 감지 */
+	glfwPollEvents();
+
+	std::this_thread::sleep_for(std::chrono::milliseconds(100));
+}
+
 int main()
 {
 	srand((unsigned)time(NULL));
 
-	GLFWwindow *window = nullptr;
+	GLFWwindow *window1 = nullptr, *window2;
 
 	/* Initialize the library */
 	if (!glfwInit())
 		return -1;
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(width_window, height_window, "3D Rendering", glfwGetPrimaryMonitor(), NULL);
+	window1 = glfwCreateWindow(width_window, height_window, "3D Rendering", NULL, NULL);
+	window2 = glfwCreateWindow(width_window, height_window, "3D Rendering", NULL, NULL);
 
-	if (!window)
+
+	if (!window1 || !window2)
 	{
 		glfwTerminate();
 		return -1;
 	}
 
 	// callbacks
-	glfwSetKeyCallback(window, key_callback);	// key board input callback
-
-
-	/* Make the window's context current */
-	glfwMakeContextCurrent(window);
-	glClearColor(0, 0, 0, 1);	// black background
-
-	int width, height;
-	glfwGetFramebufferSize(window, &width, &height);
-	glViewport(0, 0, width, height);
-	//glOrtho(0, 1, 0, 1, -1.0, 1.0);
+	// key board input callback
+	glfwSetKeyCallback(window1, key_callback);
+	glfwSetKeyCallback(window2, key_callback);
 
 	////// 선 두께, 점 크기 조정 관련
 	GLfloat LineRange[2];
@@ -190,40 +218,25 @@ int main()
 
 	controller.addListener(listener);
 
+	int width, height;
+	glfwGetFramebufferSize(window1, &width, &height);
+	glViewport(0, 0, width, height);
+	//glOrtho(0, 1, 0, 1, -1.0, 1.0);
 
 	// 윈도우가 닫힐 때까지 반복
-	while (!glfwWindowShouldClose(window))
+	while (!glfwWindowShouldClose(window1) || !glfwWindowShouldClose(window2))
 	{
-		glPointSize(listener.size);
-		glClear(GL_COLOR_BUFFER_BIT);
+		/* Make the window's context current */
+		glfwMakeContextCurrent(window1);
+		glClearColor(0, 0, 0, 1);	// black background
 
-		glTranslatef(center.x, center.y, center.z);
-		glRotatef(rotationDegreeY, 0.0f, 1.0f, 0.0f);
-		glRotatef(rotationDegreeX, 1.0f, 0.0f, 0.0f);
+		drawScene(window1);
 
-		glScalef(scaleSize, scaleSize, scaleSize);	// 확대 및 축소
+		/* Make the window's context current */
+		glfwMakeContextCurrent(window2);
+		glClearColor(0, 0, 0, 1);	// black background
 
-		////// 그림 그리는 부분
-		glBegin(GL_POINTS);
-		glColor3f(1.0f, 0.0f, 0.0f);	// default color
-
-		// 파일이 없으면 빈 화면에서 시작
-		for (int i = 0; i < listener.posBuffer.size(); i++)
-		{
-			drawpoint(listener.posBuffer[i], listener.colorBuffer[i], listener.sizeBuffer[i]);
-		}
-
-		drawpoint(listener.currentPos, vec3(0.0f, 1.0f, 0.0f), 1);
-
-		glEnd();
-
-		/* Swap front and back buffers(Double buffering) */
-		glfwSwapBuffers(window);
-
-		/* OS 이벤트 감지 */
-		glfwPollEvents();
-
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+		drawScene(window2);
 	}
 	glfwTerminate();
 
