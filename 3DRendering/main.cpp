@@ -1,6 +1,6 @@
 // color buffer 필요, 두께 buffer 필요
 
-#include <GL/glew.h>	
+#include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <cstring>
 #include <stdlib.h>		  // srand, rand
@@ -66,15 +66,17 @@ Controller controller;
 MyListener listener;
 
 vec3 center(0.0f, 0.0f, 0.0f);
-float rotationDegree = 0.0f;
+float rotationDegreeY = 0.0f;
+float rotationDegreeX = 0.0f;
+float scaleSize = 1.0f;
 
 // key board input callback
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_P && action == GLFW_RELEASE)
-		controller.removeListener(listener);	// Listener 제거 => 멈춤(P)
+		listener.isStop = true;	// Listener 제거 => 멈춤(P)
 	else if (key == GLFW_KEY_O && action == GLFW_RELEASE)
-		controller.addListener(listener);	// Listener를 추가 => 그리기 시작(O)
+		listener.isStop = false;	// Listener를 추가 => 그리기 시작(O)
 	else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
 		saveFile(listener);		// 현재의 그림을 파일로 저장(S)
 	else if (key == GLFW_KEY_C && action == GLFW_RELEASE) {		// 버퍼들 비우기 => 화면 지우기(C)
@@ -89,9 +91,15 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	// y축 기준 회전 속도 조절(빠르게 : M, 느리게 : N)
 	else if (key == GLFW_KEY_M && action == GLFW_RELEASE)
-		rotationDegree += 1.0f;
+		rotationDegreeY += 1.0f;
 	else if (key == GLFW_KEY_N && action == GLFW_RELEASE)
-		rotationDegree -= 1.0f;
+		rotationDegreeY -= 1.0f;
+
+	// x축 기준 회전 속도 조절(빠르게 : B, 느리게 : V)
+	else if (key == GLFW_KEY_B && action == GLFW_RELEASE)
+		rotationDegreeX += 1.0f;
+	else if (key == GLFW_KEY_V && action == GLFW_RELEASE)
+		rotationDegreeX -= 1.0f;
 
 	// 점의 크기(그림 전체의 두께) 설정(굵게 : L, 얇게 : K)
 	else if (key == GLFW_KEY_L && action == GLFW_RELEASE)
@@ -106,6 +114,20 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		listener.color = vec3(0.0f, 1.0f, 0.0f);
 	else if (key == GLFW_KEY_3 && action == GLFW_RELEASE)
 		listener.color = vec3(0.0f, 0.0f, 1.0f);
+
+	// 물체 확대 및 축소(토글식, 확대 : G, 축소 : H)
+	else if (key == GLFW_KEY_G && action == GLFW_RELEASE)
+	{
+		if (scaleSize == 1.0f)
+			scaleSize = 1.03f;
+		else scaleSize = 1.0f;
+	}
+	else if (key == GLFW_KEY_H && action == GLFW_RELEASE)
+	{
+		if (scaleSize == 1.0f)
+			scaleSize = 0.97f;
+		else scaleSize = 1.0f;
+	}
 
 	/*
 	// Object 중심점 x, y방향으로 옮기기(방향키)
@@ -138,7 +160,7 @@ int main()
 		return -1;
 
 	/* Create a windowed mode window and its OpenGL context */
-	window = glfwCreateWindow(width_window, height_window, "3D Rendering", NULL, NULL);
+	window = glfwCreateWindow(width_window, height_window, "3D Rendering", glfwGetPrimaryMonitor(), NULL);
 
 	if (!window)
 	{
@@ -152,7 +174,7 @@ int main()
 
 	/* Make the window's context current */
 	glfwMakeContextCurrent(window);
-	glClearColor(1, 1, 1, 1); // white background
+	glClearColor(0, 0, 0, 1);	// black background
 
 	int width, height;
 	glfwGetFramebufferSize(window, &width, &height);
@@ -162,9 +184,12 @@ int main()
 	////// 선 두께, 점 크기 조정 관련
 	GLfloat LineRange[2];
 	glGetFloatv(GL_LINE_WIDTH_RANGE, LineRange);
-	// glLineWidth(LineRange[1] / 2);
+	glLineWidth(LineRange[1] / 4);
 	
 	loadFile(listener);		// 파일 불러오기
+
+	controller.addListener(listener);
+
 
 	// 윈도우가 닫힐 때까지 반복
 	while (!glfwWindowShouldClose(window))
@@ -173,7 +198,10 @@ int main()
 		glClear(GL_COLOR_BUFFER_BIT);
 
 		glTranslatef(center.x, center.y, center.z);
-		glRotatef(rotationDegree, 0.0f, 1.0f, 0.0f);
+		glRotatef(rotationDegreeY, 0.0f, 1.0f, 0.0f);
+		glRotatef(rotationDegreeX, 1.0f, 0.0f, 0.0f);
+
+		glScalef(scaleSize, scaleSize, scaleSize);	// 확대 및 축소
 
 		////// 그림 그리는 부분
 		glBegin(GL_POINTS);
@@ -181,7 +209,12 @@ int main()
 
 		// 파일이 없으면 빈 화면에서 시작
 		for (int i = 0; i < listener.posBuffer.size(); i++)
+		{
 			drawpoint(listener.posBuffer[i], listener.colorBuffer[i], listener.sizeBuffer[i]);
+		}
+
+		drawpoint(listener.currentPos, vec3(0.0f, 1.0f, 0.0f), 1);
+
 		glEnd();
 
 		/* Swap front and back buffers(Double buffering) */
