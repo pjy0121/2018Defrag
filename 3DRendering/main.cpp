@@ -149,6 +149,15 @@ void drawpoint(vec3 pos, vec3 color, float pointSize)
 	glVertex3fv(&pos[0]);
 }
 
+void drawAxes()
+{
+	glColor3f(1.0, 0.0, 0.0);
+	glBegin(GL_LINES);
+	glVertex3f(10.0, 10.0, 0.0);
+	glVertex3f(20.0, 20.0, 0.0);
+	glEnd();
+}
+
 void drawScene(GLFWwindow *window)
 {
 	glPointSize(listener.size);
@@ -159,12 +168,14 @@ void drawScene(GLFWwindow *window)
 	glRotatef(rotationDegreeX, 1.0f, 0.0f, 0.0f);
 
 	glScalef(scaleSize, scaleSize, scaleSize);	// 확대 및 축소
+	
+	drawAxes();
 
-												////// 그림 그리는 부분
+	////// 그림 그리는 부분
 	glBegin(GL_POINTS);
 	glColor3f(1.0f, 0.0f, 0.0f);	// default color
 
-									// 파일이 없으면 빈 화면에서 시작
+	// 파일이 없으면 빈 화면에서 시작
 	for (int i = 0; i < listener.posBuffer.size(); i++)
 	{
 		drawpoint(listener.posBuffer[i], listener.colorBuffer[i], listener.sizeBuffer[i]);
@@ -187,7 +198,7 @@ int main()
 {
 	srand((unsigned)time(NULL));
 
-	GLFWwindow *window1 = nullptr, *window2;
+	GLFWwindow *window1 = nullptr;
 
 	/* Initialize the library */
 	if (!glfwInit())
@@ -195,10 +206,17 @@ int main()
 
 	/* Create a windowed mode window and its OpenGL context */
 	window1 = glfwCreateWindow(width_window, height_window, "3D Rendering", NULL, NULL);
-	window2 = glfwCreateWindow(width_window, height_window, "3D Rendering", NULL, NULL);
+	/*window2 = glfwCreateWindow(width_window/2, height_window/2, "3D Rendering", NULL, NULL);
+	window3 = glfwCreateWindow(width_window / 2, height_window / 2, "3D Rendering", NULL, NULL);
+	window4 = glfwCreateWindow(width_window / 2, height_window / 2, "3D Rendering", NULL, NULL);*/
+
+	/*glfwSetWindowPos(window1, width_window/2, 0.0f);
+	glfwSetWindowPos(window2, width_window, height_window/4);
+	glfwSetWindowPos(window3, 0.0f, height_window / 4);
+	glfwSetWindowPos(window4, width_window / 2, height_window / 2);*/
 
 
-	if (!window1 || !window2)
+	if (!window1)
 	{
 		glfwTerminate();
 		return -1;
@@ -207,7 +225,6 @@ int main()
 	// callbacks
 	// key board input callback
 	glfwSetKeyCallback(window1, key_callback);
-	glfwSetKeyCallback(window2, key_callback);
 
 	////// 선 두께, 점 크기 조정 관련
 	GLfloat LineRange[2];
@@ -224,7 +241,7 @@ int main()
 	//glOrtho(0, 1, 0, 1, -1.0, 1.0);
 
 	// 윈도우가 닫힐 때까지 반복
-	while (!glfwWindowShouldClose(window1) || !glfwWindowShouldClose(window2))
+	while (!glfwWindowShouldClose(window1))
 	{
 		/* Make the window's context current */
 		glfwMakeContextCurrent(window1);
@@ -232,11 +249,23 @@ int main()
 
 		drawScene(window1);
 
-		/* Make the window's context current */
-		glfwMakeContextCurrent(window2);
-		glClearColor(0, 0, 0, 1);	// black background
+		///* Make the window's context current */
+		//glfwMakeContextCurrent(window2);
+		//glClearColor(0, 0, 0, 1);	// black background
 
-		drawScene(window2);
+		//drawScene(window2);
+
+		///* Make the window's context current */
+		//glfwMakeContextCurrent(window3);
+		//glClearColor(0, 0, 0, 1);	// black background
+
+		//drawScene(window3);
+
+		///* Make the window's context current */
+		//glfwMakeContextCurrent(window4);
+		//glClearColor(0, 0, 0, 1);	// black background
+
+		//drawScene(window4);
 	}
 	glfwTerminate();
 
