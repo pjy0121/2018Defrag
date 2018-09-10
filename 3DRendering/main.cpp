@@ -142,25 +142,92 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	*/
 }
 
-void drawpoint(vec3 pos, vec3 color, float pointSize)
+void drawPoint(vec3 pos, vec3 color, float pointSize)
 {
 	glPointSize(pointSize);
 	glColor3fv(&color[0]);
 	glVertex3fv(&pos[0]);
 }
 
+// 좌표축 그리기
 void drawAxes()
 {
-	glColor3f(1.0, 0.0, 0.0);
+	glColor3f(1.0, 1.0, 1.0);
 	glBegin(GL_LINES);
-	glVertex3f(10.0, 10.0, 0.0);
-	glVertex3f(20.0, 20.0, 0.0);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(0.0, 10.0, 0.0);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(10.0, 0.0, 0.0);
+	glVertex3f(0.0, 0.0, 0.0);
+	glVertex3f(0.0, 0.0, 10.0);
+	glEnd();
+}
+
+// 정육면체 그리기
+void drawHex()
+{
+	glColor3f(1.0f, 1.0f, 1.0f);
+
+	double range = 0.3f;
+	double vertices[8][3] = {
+		{ range, range, range },
+		{ range, range,-range },
+		{ range,-range,-range },
+		{ -range,-range,-range },
+		{ -range,-range, range },
+		{ -range, range, range },
+		{ -range, range,-range },
+		{ range,-range, range }
+	};
+
+	glBegin(GL_LINES);
+	//Front Lines
+	//Left
+	glVertex3f(vertices[5][0], vertices[5][1], vertices[5][2]);
+	glVertex3f(vertices[4][0], vertices[4][1], vertices[4][2]);
+	//Top
+	glVertex3f(vertices[5][0], vertices[5][1], vertices[5][2]);
+	glVertex3f(vertices[0][0], vertices[0][1], vertices[0][2]);
+	//Bottom
+	glVertex3f(vertices[4][0], vertices[4][1], vertices[4][2]);
+	glVertex3f(vertices[7][0], vertices[7][1], vertices[7][2]);
+	//Right
+	glVertex3f(vertices[7][0], vertices[7][1], vertices[7][2]);
+	glVertex3f(vertices[0][0], vertices[0][1], vertices[0][2]);
+	//Middle Lines
+	//Top Left
+	glVertex3f(vertices[6][0], vertices[6][1], vertices[6][2]);
+	glVertex3f(vertices[5][0], vertices[5][1], vertices[5][2]);
+	//Top Right
+	glVertex3f(vertices[1][0], vertices[1][1], vertices[1][2]);
+	glVertex3f(vertices[0][0], vertices[0][1], vertices[0][2]);
+	//Bottom Left
+	glVertex3f(vertices[3][0], vertices[3][1], vertices[3][2]);
+	glVertex3f(vertices[4][0], vertices[4][1], vertices[4][2]);
+	//Bottom Right
+	glVertex3f(vertices[2][0], vertices[2][1], vertices[2][2]);
+	glVertex3f(vertices[7][0], vertices[7][1], vertices[7][2]);
+	//Back Lines
+	//Left
+	glVertex3f(vertices[6][0], vertices[6][1], vertices[6][2]);
+	glVertex3f(vertices[3][0], vertices[3][1], vertices[3][2]);
+	//Top
+	glVertex3f(vertices[6][0], vertices[6][1], vertices[6][2]);
+	glVertex3f(vertices[1][0], vertices[1][1], vertices[1][2]);
+	//Bottom
+	glVertex3f(vertices[3][0], vertices[3][1], vertices[3][2]);
+	glVertex3f(vertices[2][0], vertices[2][1], vertices[2][2]);
+	//Right
+	glVertex3f(vertices[2][0], vertices[2][1], vertices[2][2]);
+	glVertex3f(vertices[1][0], vertices[1][1], vertices[1][2]);
+
 	glEnd();
 }
 
 void drawScene(GLFWwindow *window)
 {
 	glPointSize(listener.size);
+
 	glClear(GL_COLOR_BUFFER_BIT);
 
 	glTranslatef(center.x, center.y, center.z);
@@ -169,7 +236,7 @@ void drawScene(GLFWwindow *window)
 
 	glScalef(scaleSize, scaleSize, scaleSize);	// 확대 및 축소
 	
-	drawAxes();
+	drawHex();
 
 	////// 그림 그리는 부분
 	glBegin(GL_POINTS);
@@ -178,11 +245,14 @@ void drawScene(GLFWwindow *window)
 	// 파일이 없으면 빈 화면에서 시작
 	for (int i = 0; i < listener.posBuffer.size(); i++)
 	{
-		drawpoint(listener.posBuffer[i], listener.colorBuffer[i], listener.sizeBuffer[i]);
+		drawPoint(listener.posBuffer[i], listener.colorBuffer[i], listener.sizeBuffer[i]);
 	}
+	glEnd();
 
-	drawpoint(listener.currentPos, vec3(0.0f, 1.0f, 0.0f), 1);
-
+	// 현재 위치 포인터 그리기
+	glPointSize(abs(listener.currentPos.z) * 25.0f);	// 포인터 사이즈 조절
+	glBegin(GL_POINTS);
+	drawPoint(listener.currentPos, vec3(1.0f, 1.0f, 1.0f), 1.0f);	
 	glEnd();
 
 	/* Swap front and back buffers(Double buffering) */
