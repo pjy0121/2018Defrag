@@ -374,7 +374,8 @@ int main()
 	glGetFloatv(GL_LINE_WIDTH_RANGE, LineRange);
 	glLineWidth(LineRange[1] / 4);
 
-	loadFile(listener);		// 파일 불러오기
+	// 처음시작 공백
+	// loadFile(listener);		// 파일 불러오기
 
 	controller.addListener(listener);
 
