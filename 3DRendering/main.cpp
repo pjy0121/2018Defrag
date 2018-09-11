@@ -1,4 +1,7 @@
-// color buffer ÇÊ¿ä, µÎ²² buffer ÇÊ¿ä
+#ifndef UNICODE
+#define UNICODE
+#endif 
+// color buffer í•„ìš”, ë‘ê»˜ buffer í•„ìš”
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -22,7 +25,7 @@
 #include <windows.h>
 #include <shobjidl.h> 
 /*
-file ¼±ÅÃ openÇÔ¼ö
+file ì„ íƒ opení•¨ìˆ˜
 */
 wchar_t* WINAPI wchar_File_Select_Name()//(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
 {
@@ -78,19 +81,19 @@ using namespace std;
 using namespace glm;
 using namespace Leap;
 
-///// ÆÄÀÏ ÀÔÃâ·Â °ü·Ã
-// ÆÄÀÏ ¾²±â ÇÔ¼ö
+///// íŒŒì¼ ì…ì¶œë ¥ ê´€ë ¨
+// íŒŒì¼ ì“°ê¸° í•¨ìˆ˜
 void saveFile(const MyListener& L)
 {
 	std::ofstream outputFile("output.txt");
 	for (int i = 0; i < L.posBuffer.size(); i++)
-		outputFile << L.posBuffer[i].x << " " << L.posBuffer[i].y << " " << L.posBuffer[i].z << " " <<	// Á¡ÀÇ À§Ä¡ ÀúÀå
-		L.colorBuffer[i].x << " " << L.colorBuffer[i].y << " " << L.colorBuffer[i].z << " " <<		// Á¡ÀÇ »ö±ò ÀúÀå
-		L.sizeBuffer[i] << std::endl;	// Á¡ÀÇ Å©±â ÀúÀå
+		outputFile << L.posBuffer[i].x << " " << L.posBuffer[i].y << " " << L.posBuffer[i].z << " " <<	// ì ì˜ ìœ„ì¹˜ ì €ì¥
+		L.colorBuffer[i].x << " " << L.colorBuffer[i].y << " " << L.colorBuffer[i].z << " " <<		// ì ì˜ ìƒ‰ê¹” ì €ì¥
+		L.sizeBuffer[i] << std::endl;	// ì ì˜ í¬ê¸° ì €ì¥
 	outputFile.close();
 }
 
-// ÆÄÀÏÀ» ÀĞ¾îµé¿© ±× ¾ÈÀÇ ÁÂÇ¥¸¦ buffer·Î ¿Å°ÜÁÖ±â
+// íŒŒì¼ì„ ì½ì–´ë“¤ì—¬ ê·¸ ì•ˆì˜ ì¢Œí‘œë¥¼ bufferë¡œ ì˜®ê²¨ì£¼ê¸°
 void loadFile(const MyListener& L)
 {
 	wchar_t* get_file_name = wchar_File_Select_Name();//
@@ -103,11 +106,11 @@ void loadFile(const MyListener& L)
 		string a, b, c, d, e, f, g;
 		while (inputFile >> a >> b >> c >> d >> e >> f >> g)
 		{
-			vec3 pos(stof(a), stof(b), stof(c));	// ÆÄÀÏ ¾ÈÀÇ ÁÂÇ¥µéÀ» floatÇüÀ¸·Î ¹Ù²ã¼­ vec3·Î ¹­À½
-			L.posBuffer.push_back(pos);	// buffer¿¡ Áı¾î ³Ö¾îÁÜ
-			vec3 color(stof(d), stof(e), stof(f));		// ÆÄÀÏ ¾ÈÀÇ »ö±ò Á¤º¸µéÀ» vec3·Î ¹­À½
-			L.colorBuffer.push_back(color);	// color buffer¿¡ Áı¾î ³Ö¾îÁÜ
-			L.sizeBuffer.push_back(stof(g));		// ÆÄÀÏ ¾ÈÀÇ Å©±â Á¤º¸¸¦ size buffer¿¡ Áı¾î ³Ö¾îÁÜ
+			vec3 pos(stof(a), stof(b), stof(c));	// íŒŒì¼ ì•ˆì˜ ì¢Œí‘œë“¤ì„ floatí˜•ìœ¼ë¡œ ë°”ê¿”ì„œ vec3ë¡œ ë¬¶ìŒ
+			L.posBuffer.push_back(pos);	// bufferì— ì§‘ì–´ ë„£ì–´ì¤Œ
+			vec3 color(stof(d), stof(e), stof(f));		// íŒŒì¼ ì•ˆì˜ ìƒ‰ê¹” ì •ë³´ë“¤ì„ vec3ë¡œ ë¬¶ìŒ
+			L.colorBuffer.push_back(color);	// color bufferì— ì§‘ì–´ ë„£ì–´ì¤Œ
+			L.sizeBuffer.push_back(stof(g));		// íŒŒì¼ ì•ˆì˜ í¬ê¸° ì •ë³´ë¥¼ size bufferì— ì§‘ì–´ ë„£ì–´ì¤Œ
 		}
 		inputFile.close();
 	}
@@ -126,40 +129,40 @@ float scaleSize = 1.0f;
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
 	if (key == GLFW_KEY_P && action == GLFW_RELEASE)
-		listener.isStop = true;	// Listener Á¦°Å => ¸ØÃã(P)
+		listener.isStop = true;	// Listener ì œê±° => ë©ˆì¶¤(P)
 	else if (key == GLFW_KEY_O && action == GLFW_RELEASE)
-		listener.isStop = false;	// Listener¸¦ Ãß°¡ => ±×¸®±â ½ÃÀÛ(O)
+		listener.isStop = false;	// Listenerë¥¼ ì¶”ê°€ => ê·¸ë¦¬ê¸° ì‹œì‘(O)
 	else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
-		saveFile(listener);		// ÇöÀçÀÇ ±×¸²À» ÆÄÀÏ·Î ÀúÀå(S)
-	else if (key == GLFW_KEY_C && action == GLFW_RELEASE) {		// ¹öÆÛµé ºñ¿ì±â => È­¸é Áö¿ì±â(C)
+		saveFile(listener);		// í˜„ì¬ì˜ ê·¸ë¦¼ì„ íŒŒì¼ë¡œ ì €ì¥(S)
+	else if (key == GLFW_KEY_C && action == GLFW_RELEASE) {		// ë²„í¼ë“¤ ë¹„ìš°ê¸° => í™”ë©´ ì§€ìš°ê¸°(C)
 		listener.posBuffer.clear();
 		listener.colorBuffer.clear();
 		listener.sizeBuffer.clear();
 	}
-	else if (key == GLFW_KEY_Q && action == GLFW_RELEASE) {		// Á¾·á(Q)
+	else if (key == GLFW_KEY_Q && action == GLFW_RELEASE) {		// ì¢…ë£Œ(Q)
 		glfwTerminate();
 		exit(0);
 	}
 
-	// yÃà ±âÁØ È¸Àü ¼Óµµ Á¶Àı(ºü¸£°Ô : M, ´À¸®°Ô : N)
+	// yì¶• ê¸°ì¤€ íšŒì „ ì†ë„ ì¡°ì ˆ(ë¹ ë¥´ê²Œ : M, ëŠë¦¬ê²Œ : N)
 	else if (key == GLFW_KEY_M && action == GLFW_RELEASE)
 		rotationDegreeY += 1.0f;
 	else if (key == GLFW_KEY_N && action == GLFW_RELEASE)
 		rotationDegreeY -= 1.0f;
 
-	// xÃà ±âÁØ È¸Àü ¼Óµµ Á¶Àı(ºü¸£°Ô : B, ´À¸®°Ô : V)
+	// xì¶• ê¸°ì¤€ íšŒì „ ì†ë„ ì¡°ì ˆ(ë¹ ë¥´ê²Œ : B, ëŠë¦¬ê²Œ : V)
 	else if (key == GLFW_KEY_B && action == GLFW_RELEASE)
 		rotationDegreeX += 1.0f;
 	else if (key == GLFW_KEY_V && action == GLFW_RELEASE)
 		rotationDegreeX -= 1.0f;
 
-	// Á¡ÀÇ Å©±â(±×¸² ÀüÃ¼ÀÇ µÎ²²) ¼³Á¤(±½°Ô : L, ¾ã°Ô : K)
+	// ì ì˜ í¬ê¸°(ê·¸ë¦¼ ì „ì²´ì˜ ë‘ê»˜) ì„¤ì •(êµµê²Œ : L, ì–‡ê²Œ : K)
 	else if (key == GLFW_KEY_L && action == GLFW_RELEASE)
 		listener.size += 1.0f;
 	else if (key == GLFW_KEY_K && action == GLFW_RELEASE)
 		listener.size -= 1.0f;
 
-	// ±×¸®±â »ö±ò ¼³Á¤
+	// ê·¸ë¦¬ê¸° ìƒ‰ê¹” ì„¤ì •
 	else if (key == GLFW_KEY_1 && action == GLFW_RELEASE)
 		listener.color = vec3(1.0f, 0.0f, 0.0f);
 	else if (key == GLFW_KEY_2 && action == GLFW_RELEASE)
@@ -167,7 +170,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	else if (key == GLFW_KEY_3 && action == GLFW_RELEASE)
 		listener.color = vec3(0.0f, 0.0f, 1.0f);
 
-	// ¹°Ã¼ È®´ë ¹× Ãà¼Ò(Åä±Û½Ä, È®´ë : G, Ãà¼Ò : H)
+	// ë¬¼ì²´ í™•ëŒ€ ë° ì¶•ì†Œ(í† ê¸€ì‹, í™•ëŒ€ : G, ì¶•ì†Œ : H)
 	else if (key == GLFW_KEY_G && action == GLFW_RELEASE)
 	{
 		if (scaleSize == 1.0f)
@@ -182,7 +185,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	}
 
 	/*
-	// Object Áß½ÉÁ¡ x, y¹æÇâÀ¸·Î ¿Å±â±â(¹æÇâÅ°)
+	// Object ì¤‘ì‹¬ì  x, yë°©í–¥ìœ¼ë¡œ ì˜®ê¸°ê¸°(ë°©í–¥í‚¤)
 	else if (key == GLFW_KEY_UP && action == GLFW_RELEASE)
 		center.x += 0.1f;
 	else if (key == GLFW_KEY_DOWN && action == GLFW_RELEASE)
@@ -201,7 +204,7 @@ void drawPoint(vec3 pos, vec3 color, float pointSize)
 	glVertex3fv(&pos[0]);
 }
 
-// ÁÂÇ¥Ãà ±×¸®±â
+// ì¢Œí‘œì¶• ê·¸ë¦¬ê¸°
 void drawAxes()
 {
 	glColor3f(1.0, 1.0, 1.0);
@@ -215,7 +218,7 @@ void drawAxes()
 	glEnd();
 }
 
-// Á¤À°¸éÃ¼ ±×¸®±â
+// ì •ìœ¡ë©´ì²´ ê·¸ë¦¬ê¸°
 void drawHex()
 {
 	glColor3f(1.0f, 1.0f, 1.0f);
@@ -286,23 +289,23 @@ void drawScene(GLFWwindow *window)
 	glRotatef(rotationDegreeY, 0.0f, 1.0f, 0.0f);
 	glRotatef(rotationDegreeX, 1.0f, 0.0f, 0.0f);
 
-	glScalef(scaleSize, scaleSize, scaleSize);	// È®´ë ¹× Ãà¼Ò
+	glScalef(scaleSize, scaleSize, scaleSize);	// í™•ëŒ€ ë° ì¶•ì†Œ
 	
 	drawHex();
 
-	////// ±×¸² ±×¸®´Â ºÎºĞ
+	////// ê·¸ë¦¼ ê·¸ë¦¬ëŠ” ë¶€ë¶„
 	glBegin(GL_POINTS);
 	glColor3f(1.0f, 0.0f, 0.0f);	// default color
 
-	// ÆÄÀÏÀÌ ¾øÀ¸¸é ºó È­¸é¿¡¼­ ½ÃÀÛ
+	// íŒŒì¼ì´ ì—†ìœ¼ë©´ ë¹ˆ í™”ë©´ì—ì„œ ì‹œì‘
 	for (int i = 0; i < listener.posBuffer.size(); i++)
 	{
 		drawPoint(listener.posBuffer[i], listener.colorBuffer[i], listener.sizeBuffer[i]);
 	}
 	glEnd();
 
-	// ÇöÀç À§Ä¡ Æ÷ÀÎÅÍ ±×¸®±â
-	glPointSize(abs(listener.currentPos.z) * 25.0f);	// Æ÷ÀÎÅÍ »çÀÌÁî Á¶Àı
+	// í˜„ì¬ ìœ„ì¹˜ í¬ì¸í„° ê·¸ë¦¬ê¸°
+	glPointSize(abs(listener.currentPos.z) * 25.0f);	// í¬ì¸í„° ì‚¬ì´ì¦ˆ ì¡°ì ˆ
 	glBegin(GL_POINTS);
 	drawPoint(listener.currentPos, vec3(1.0f, 1.0f, 1.0f), 1.0f);	
 	glEnd();
@@ -310,7 +313,7 @@ void drawScene(GLFWwindow *window)
 	/* Swap front and back buffers(Double buffering) */
 	glfwSwapBuffers(window);
 
-	/* OS ÀÌº¥Æ® °¨Áö */
+	/* OS ì´ë²¤íŠ¸ ê°ì§€ */
 	glfwPollEvents();
 
 	std::this_thread::sleep_for(std::chrono::milliseconds(100));
@@ -348,12 +351,12 @@ int main()
 	// key board input callback
 	glfwSetKeyCallback(window1, key_callback);
 
-	////// ¼± µÎ²², Á¡ Å©±â Á¶Á¤ °ü·Ã
+	////// ì„  ë‘ê»˜, ì  í¬ê¸° ì¡°ì • ê´€ë ¨
 	GLfloat LineRange[2];
 	glGetFloatv(GL_LINE_WIDTH_RANGE, LineRange);
 	glLineWidth(LineRange[1] / 4);
 	
-	loadFile(listener);		// ÆÄÀÏ ºÒ·¯¿À±â
+	loadFile(listener);		// íŒŒì¼ ë¶ˆëŸ¬ì˜¤ê¸°
 
 	controller.addListener(listener);
 
@@ -362,7 +365,7 @@ int main()
 	glViewport(0, 0, width, height);
 	//glOrtho(0, 1, 0, 1, -1.0, 1.0);
 
-	// À©µµ¿ì°¡ ´İÈú ¶§±îÁö ¹İº¹
+	// ìœˆë„ìš°ê°€ ë‹«í ë•Œê¹Œì§€ ë°˜ë³µ
 	while (!glfwWindowShouldClose(window1))
 	{
 		/* Make the window's context current */
