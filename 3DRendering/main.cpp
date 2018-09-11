@@ -58,7 +58,8 @@ wchar_t* WINAPI wchar_File_Select_Name()//(HINSTANCE hInstance, HINSTANCE, PWSTR
 					// Display the file name to the user.
 					if (SUCCEEDED(hr))
 					{
-						MessageBox(NULL, pszFilePath, L"File Path", MB_OK);
+						//skip message Box
+						//MessageBox(NULL, pszFilePath, L"File Path", MB_OK);
 						ret_wchar = pszFilePath;
 						CoTaskMemFree(pszFilePath);
 					}
@@ -85,7 +86,17 @@ using namespace Leap;
 // 파일 쓰기 함수
 void saveFile(const MyListener& L)
 {
-	std::ofstream outputFile("output.txt");
+	SYSTEMTIME lst;
+	GetLocalTime(&lst);
+	string now_systime = "[" + to_string(lst.wYear);
+	now_systime += "-" + to_string(lst.wMonth);
+	now_systime += "-" + to_string(lst.wDay);
+	now_systime += "] " + to_string(lst.wHour);
+	now_systime += "시 " + to_string(lst.wMinute);
+	now_systime += "분 " + to_string(lst.wSecond);
+	now_systime += "초.txt";
+
+	std::ofstream outputFile(now_systime);
 	for (int i = 0; i < L.posBuffer.size(); i++)
 		outputFile << L.posBuffer[i].x << " " << L.posBuffer[i].y << " " << L.posBuffer[i].z << " " <<	// 점의 위치 저장
 		L.colorBuffer[i].x << " " << L.colorBuffer[i].y << " " << L.colorBuffer[i].z << " " <<		// 점의 색깔 저장
