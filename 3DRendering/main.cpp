@@ -18,6 +18,56 @@
 #include <GL/glut.h>
 #include <random>
 
+
+#include <windows.h>
+#include <shobjidl.h> 
+/*
+file 선택 open함수
+*/
+wchar_t* WINAPI wchar_File_Select_Name()//(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
+{
+	static wchar_t *ret_wchar;
+	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED |
+		COINIT_DISABLE_OLE1DDE);
+	if (SUCCEEDED(hr))
+	{
+		IFileOpenDialog *pFileOpen;
+
+		// Create the FileOpenDialog object.
+		hr = CoCreateInstance(CLSID_FileOpenDialog, NULL, CLSCTX_ALL,
+			IID_IFileOpenDialog, reinterpret_cast<void**>(&pFileOpen));
+
+		if (SUCCEEDED(hr))
+		{
+			// Show the Open dialog box.
+			hr = pFileOpen->Show(NULL);
+
+			// Get the file name from the dialog box.
+			if (SUCCEEDED(hr))
+			{
+				IShellItem *pItem;
+				hr = pFileOpen->GetResult(&pItem);
+				if (SUCCEEDED(hr))
+				{
+					PWSTR pszFilePath;
+					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+
+					// Display the file name to the user.
+					if (SUCCEEDED(hr))
+					{
+						MessageBox(NULL, pszFilePath, L"File Path", MB_OK);
+						ret_wchar = pszFilePath;
+						CoTaskMemFree(pszFilePath);
+					}
+					pItem->Release();
+				}
+			}
+			pFileOpen->Release();
+		}
+		CoUninitialize();
+	}
+	return ret_wchar;
+}
 // const int width_window = 640;
 // const int height_window = 480;
 
@@ -43,8 +93,10 @@ void saveFile(const MyListener& L)
 // 파일을 읽어들여 그 안의 좌표를 buffer로 옮겨주기
 void loadFile(const MyListener& L)
 {
+	wchar_t* get_file_name = wchar_File_Select_Name();//
 	string line;
-	ifstream inputFile("output.txt");
+	ifstream inputFile(get_file_name);
+
 
 	if (inputFile.is_open())
 	{
