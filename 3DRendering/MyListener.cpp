@@ -8,7 +8,7 @@ float MyListener::size = 10.0f;
 std::vector<glm::vec3> MyListener::posBuffer;
 std::vector<glm::vec3> MyListener::colorBuffer;
 std::vector<float> MyListener::sizeBuffer;
-bool MyListener::isStop = false;
+bool MyListener::isStop = true;
 glm::vec3 MyListener::currentPos;
 
 void MyListener::onConnect(const Leap::Controller& controller) {

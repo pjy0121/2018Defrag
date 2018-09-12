@@ -128,13 +128,13 @@ float scaleSize = 1.0f;
 // key board input callback
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
-	if (key == GLFW_KEY_P && action == GLFW_RELEASE)
-		listener.isStop = true;	// Listener 제거 => 멈춤(P)
+	if (key == GLFW_KEY_TAB && action == GLFW_RELEASE)
+		listener.isStop = true;	// Listener 제거 => 멈춤(TAB)
+	else if (key == GLFW_KEY_ENTER && action == GLFW_RELEASE)
+		listener.isStop = false;	// Listener를 추가 => 그리기 시작(ENTER)
 	else if (key == GLFW_KEY_O && action == GLFW_RELEASE)
-		listener.isStop = false;	// Listener를 추가 => 그리기 시작(O)
-	else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
-		saveFile(listener);		// 현재의 그림을 파일로 저장(S)
-	else if (key == GLFW_KEY_C && action == GLFW_RELEASE) {		// 버퍼들 비우기 => 화면 지우기(C)
+		saveFile(listener);		// 현재의 그림을 파일로 저장(O)
+	else if (key == GLFW_KEY_B && action == GLFW_RELEASE) {		// 버퍼들 비우기 => 화면 지우기(B)
 		listener.posBuffer.clear();
 		listener.colorBuffer.clear();
 		listener.sizeBuffer.clear();
@@ -144,16 +144,16 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		exit(0);
 	}
 
-	// y축 기준 회전 속도 조절(빠르게 : M, 느리게 : N)
-	else if (key == GLFW_KEY_M && action == GLFW_RELEASE)
+	// y축 기준 회전 속도 조절(빠르게 : W, 느리게 : S)
+	else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
 		rotationDegreeY += 1.0f;
-	else if (key == GLFW_KEY_N && action == GLFW_RELEASE)
+	else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
 		rotationDegreeY -= 1.0f;
 
-	// x축 기준 회전 속도 조절(빠르게 : B, 느리게 : V)
-	else if (key == GLFW_KEY_B && action == GLFW_RELEASE)
+	// x축 기준 회전 속도 조절(빠르게 : A, 느리게 : D)
+	else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
 		rotationDegreeX += 1.0f;
-	else if (key == GLFW_KEY_V && action == GLFW_RELEASE)
+	else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
 		rotationDegreeX -= 1.0f;
 
 	// 점의 크기(그림 전체의 두께) 설정(굵게 : L, 얇게 : K)
@@ -281,6 +281,7 @@ void drawHex()
 
 void drawScene(GLFWwindow *window)
 {
+	glLineWidth(10.0f);
 	glPointSize(listener.size);
 
 	glClear(GL_COLOR_BUFFER_BIT);
@@ -294,7 +295,7 @@ void drawScene(GLFWwindow *window)
 	drawHex();
 
 	////// 그림 그리는 부분
-	glBegin(GL_POINTS);
+	glBegin(GL_LINE_STRIP);
 	glColor3f(1.0f, 0.0f, 0.0f);	// default color
 
 	// 파일이 없으면 빈 화면에서 시작
