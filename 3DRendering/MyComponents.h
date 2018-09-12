@@ -137,4 +137,23 @@ namespace MyComponents
 
 		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
+
+	// 화면 그리기
+	void drawScene2(GLFWwindow *window, const MyListener& L)
+	{
+		glLineWidth(10.0f);
+		glPointSize(L.size);
+
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		drawAxes();	// 정육면체 그리기
+
+		/* Swap front and back buffers(Double buffering) */
+		glfwSwapBuffers(window);
+
+		/* OS 이벤트 감지 */
+		glfwPollEvents();
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
+	}
 }

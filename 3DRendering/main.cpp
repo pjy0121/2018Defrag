@@ -1,7 +1,6 @@
 #ifndef UNICODE
 #define UNICODE
 #endif 
-// color buffer 필요, 두께 buffer 필요
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -20,9 +19,6 @@
 #include "MyFile.h"
 #include "MyComponents.h"
 
-// const int width_window = 640;
-// const int height_window = 480;
-
 const int width_window = 1280;
 const int height_window = 960;
 
@@ -33,6 +29,7 @@ using namespace Leap;
 // global variables
 Controller controller;
 MyListener listener;
+int scene = 1;
 
 // key board input callback
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
@@ -72,10 +69,10 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		exit(0);
 	}
 
-	// x축 기준 회전 속도 조절(빠르게 : A, 느리게 : D)
-	else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
-		MyComponents::rotationDegreeX += 1.0f;
+	// x축 기준 회전 속도 조절(빠르게 : D, 느리게 : A)
 	else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
+		MyComponents::rotationDegreeX += 1.0f;
+	else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
 		MyComponents::rotationDegreeX -= 1.0f;
 	// y축 기준 회전 속도 조절(빠르게 : W, 느리게 : S)
 	else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
@@ -109,6 +106,16 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		if (MyComponents::scaleSize == 1.0f)
 			MyComponents::scaleSize = 0.97f;
 		else MyComponents::scaleSize = 1.0f;
+	}
+
+	else if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
+	{
+		scene = 0;
+	}
+
+	else if (key == GLFW_KEY_9 && action == GLFW_RELEASE)
+	{
+		scene = 1;
 	}
 
 	/*
@@ -166,7 +173,8 @@ int main()
 		glfwMakeContextCurrent(window1);
 		glClearColor(0, 0, 0, 1);	// black background
 
-		MyComponents::drawScene(window1, listener);
+		if(scene == 1)MyComponents::drawScene(window1, listener);
+		else MyComponents::drawScene2(window1, listener);
 	}
 	glfwTerminate();
 
