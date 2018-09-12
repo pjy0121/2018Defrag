@@ -10,6 +10,8 @@ namespace MyFile
 {
 	// 파일 선택 창 open
 	wchar_t* WINAPI wchar_File_Select_Name();
+	// 파일 svae 선택창 open
+	wchar_t* WINAPI wchar_File_Save_Name();
 
 	// 파일 쓰기 함수
 	void saveFile(const MyListener& L);
