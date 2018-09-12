@@ -37,19 +37,24 @@ MyListener listener;
 // key board input callback
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
+	// 그리기 중단(TAB)
 	if (key == GLFW_KEY_TAB && action == GLFW_RELEASE)
-		listener.isStop = true;	// Listener 제거 => 멈춤(TAB)
+		listener.isStop = true;
+	// 그리기 시작(ENTER)
 	else if (key == GLFW_KEY_ENTER && action == GLFW_RELEASE)
-		listener.isStop = false;	// Listener를 추가 => 그리기 시작(ENTER)
+		listener.isStop = false;
 
+	// 현재의 그림을 파일로 저장(F)
 	else if (key == GLFW_KEY_F && action == GLFW_RELEASE)
-		MyFile::saveFile(listener);		// 현재의 그림을 파일로 저장(F)
-	else if (key == GLFW_KEY_L && action == GLFW_RELEASE)	// 새로운 파일 load(L)
+		MyFile::saveFile(listener);		
+	// 파일 로드(L)
+	else if (key == GLFW_KEY_L && action == GLFW_RELEASE)
 	{
 		// 현재 그리던 그림을 flush
 		listener.posBuffer.clear();
 		listener.colorBuffer.clear();
 		listener.sizeBuffer.clear();
+
 		MyFile::loadFile(listener);		// 파일 불러오기
 	}
 	
@@ -78,7 +83,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
 		MyComponents::rotationDegreeY -= 1.0f;
 
-
 	// 점의 크기(그림 전체의 두께) 설정(굵게 : L, 얇게 : K)
 	else if (key == GLFW_KEY_L && action == GLFW_RELEASE)
 		listener.size += 1.0f;
@@ -106,6 +110,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			MyComponents::scaleSize = 0.97f;
 		else MyComponents::scaleSize = 1.0f;
 	}
+
 	/*
 	// Object 중심점 x, y방향으로 옮기기(방향키)
 	else if (key == GLFW_KEY_UP && action == GLFW_RELEASE)
@@ -131,15 +136,6 @@ int main()
 
 	/* Create a windowed mode window and its OpenGL context */
 	window1 = glfwCreateWindow(width_window, height_window, "3D Rendering", NULL, NULL);
-	/*window2 = glfwCreateWindow(width_window/2, height_window/2, "3D Rendering", NULL, NULL);
-	window3 = glfwCreateWindow(width_window / 2, height_window / 2, "3D Rendering", NULL, NULL);
-	window4 = glfwCreateWindow(width_window / 2, height_window / 2, "3D Rendering", NULL, NULL);*/
-
-	/*glfwSetWindowPos(window1, width_window/2, 0.0f);
-	glfwSetWindowPos(window2, width_window, height_window/4);
-	glfwSetWindowPos(window3, 0.0f, height_window / 4);
-	glfwSetWindowPos(window4, width_window / 2, height_window / 2);*/
-
 
 	if (!window1)
 	{
@@ -156,12 +152,12 @@ int main()
 	glGetFloatv(GL_LINE_WIDTH_RANGE, LineRange);
 	glLineWidth(LineRange[1] / 4);
 
-	controller.addListener(listener);
-
 	int width, height;
 	glfwGetFramebufferSize(window1, &width, &height);
 	glViewport(0, 0, width, height);
 	//glOrtho(0, 1, 0, 1, -1.0, 1.0);
+
+	controller.addListener(listener);
 
 	// 윈도우가 닫힐 때까지 반복
 	while (!glfwWindowShouldClose(window1))
@@ -171,24 +167,6 @@ int main()
 		glClearColor(0, 0, 0, 1);	// black background
 
 		MyComponents::drawScene(window1, listener);
-
-		///* Make the window's context current */
-		//glfwMakeContextCurrent(window2);
-		//glClearColor(0, 0, 0, 1);	// black background
-
-		//drawScene(window2);
-
-		///* Make the window's context current */
-		//glfwMakeContextCurrent(window3);
-		//glClearColor(0, 0, 0, 1);	// black background
-
-		//drawScene(window3);
-
-		///* Make the window's context current */
-		//glfwMakeContextCurrent(window4);
-		//glClearColor(0, 0, 0, 1);	// black background
-
-		//drawScene(window4);
 	}
 	glfwTerminate();
 

@@ -103,19 +103,20 @@ namespace MyComponents
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		glTranslatef(MyComponents::center.x, MyComponents::center.y, MyComponents::center.z);
-		glRotatef(MyComponents::rotationDegreeY, 0.0f, 1.0f, 0.0f);
-		glRotatef(MyComponents::rotationDegreeX, 1.0f, 0.0f, 0.0f);
+		glTranslatef(center.x, center.y, center.z);
+		glRotatef(rotationDegreeX, 1.0f, 0.0f, 0.0f);
+		glRotatef(rotationDegreeY, 0.0f, 1.0f, 0.0f);
 
 		glScalef(scaleSize, scaleSize, scaleSize);	// 확대 및 축소
 
+		
+		////// 그림 그리는 부분
 		drawHex();	// 정육면체 그리기
 
-					////// 그림 그리는 부분
 		glBegin(GL_LINE_STRIP);
 		glColor3f(1.0f, 0.0f, 0.0f);	// default color
 
-										// 파일이 없으면 빈 화면에서 시작
+		// 파일이 없으면 빈 화면에서 시작
 		for (int i = 0; i < L.posBuffer.size(); i++)
 		{
 			drawPoint(L.posBuffer[i], L.colorBuffer[i], L.sizeBuffer[i]);
