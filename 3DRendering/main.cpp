@@ -17,7 +17,7 @@
 #include "MyListener.h"
 #include <random>
 #include "MyFile.h"
-#include "MyComponents.h"
+#include "MyComponent.h"
 
 const int width_window = 1280;
 const int height_window = 960;
@@ -26,11 +26,15 @@ using namespace std;
 using namespace glm;
 using namespace Leap;
 
-// global variables
+////// global variables
 Controller controller;
 MyListener listener;
-int scene = 1;
+// 인터페이스 on/off
+bool interfaceA = false;
+bool interfaceB = false;
 
+
+////// callbacks
 // key board input callback
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods)
 {
@@ -71,19 +75,19 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	// x축 기준 회전 속도 조절(빠르게 : D, 느리게 : A)
 	else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
-		MyComponents::rotationDegreeX += 1.0f;
+		MyComponent::rotationDegreeX += 1.0f;
 	else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
-		MyComponents::rotationDegreeX -= 1.0f;
+		MyComponent::rotationDegreeX -= 1.0f;
 	// y축 기준 회전 속도 조절(빠르게 : W, 느리게 : S)
 	else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
-		MyComponents::rotationDegreeY += 1.0f;
+		MyComponent::rotationDegreeY += 1.0f;
 	else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
-		MyComponents::rotationDegreeY -= 1.0f;
+		MyComponent::rotationDegreeY -= 1.0f;
 
-	// 점의 크기(그림 전체의 두께) 설정(굵게 : L, 얇게 : K)
-	else if (key == GLFW_KEY_L && action == GLFW_RELEASE)
+	// 점의 크기(그림 전체의 두께) 설정(굵게 : T, 얇게 : Y)
+	else if (key == GLFW_KEY_T && action == GLFW_RELEASE)
 		listener.size += 1.0f;
-	else if (key == GLFW_KEY_K && action == GLFW_RELEASE)
+	else if (key == GLFW_KEY_Y && action == GLFW_RELEASE)
 		listener.size -= 1.0f;
 
 	// 그리기 색깔 설정
@@ -97,25 +101,25 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	// 물체 확대 및 축소(토글식, 확대 : G, 축소 : H)
 	else if (key == GLFW_KEY_G && action == GLFW_RELEASE)
 	{
-		if (MyComponents::scaleSize == 1.0f)
-			MyComponents::scaleSize = 1.03f;
-		else MyComponents::scaleSize = 1.0f;
+		if (MyComponent::scaleSize == 1.0f)
+			MyComponent::scaleSize = 1.03f;
+		else MyComponent::scaleSize = 1.0f;
 	}
 	else if (key == GLFW_KEY_H && action == GLFW_RELEASE)
 	{
-		if (MyComponents::scaleSize == 1.0f)
-			MyComponents::scaleSize = 0.97f;
-		else MyComponents::scaleSize = 1.0f;
+		if (MyComponent::scaleSize == 1.0f)
+			MyComponent::scaleSize = 0.97f;
+		else MyComponent::scaleSize = 1.0f;
 	}
 
-	else if (key == GLFW_KEY_0 && action == GLFW_RELEASE)
+	else if (key == GLFW_KEY_UP && action == GLFW_RELEASE)
 	{
-		scene = 0;
+		interfaceA = interfaceA ? false : true;
 	}
 
-	else if (key == GLFW_KEY_9 && action == GLFW_RELEASE)
+	else if (key == GLFW_KEY_DOWN && action == GLFW_RELEASE)
 	{
-		scene = 1;
+		interfaceB = interfaceB ? false : true;
 	}
 
 	/*
@@ -131,28 +135,38 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	*/
 }
 
+// mouse button callback
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
+		listener.color = vec3(0.0f, 0.0f, 1.0f);
+}
+
 int main()
 {
 	srand((unsigned)time(NULL));
 
-	GLFWwindow *window1 = nullptr;
+	GLFWwindow *window = nullptr;
 
 	/* Initialize the library */
 	if (!glfwInit())
 		return -1;
 
 	/* Create a windowed mode window and its OpenGL context */
-	window1 = glfwCreateWindow(width_window, height_window, "3D Rendering", NULL, NULL);
+	window = glfwCreateWindow(width_window, height_window, "3D Rendering", NULL, NULL);
 
-	if (!window1)
+	if (!window)
 	{
 		glfwTerminate();
 		return -1;
 	}
 
-	// callbacks
+	////// callbacks
 	// key board input callback
-	glfwSetKeyCallback(window1, key_callback);
+	glfwSetKeyCallback(window, key_callback);
+	// mouse button callback
+	glfwSetMouseButtonCallback(window, mouse_button_callback);
+
 
 	////// 선 두께, 점 크기 조정 관련
 	GLfloat LineRange[2];
@@ -160,21 +174,33 @@ int main()
 	glLineWidth(LineRange[1] / 4);
 
 	int width, height;
-	glfwGetFramebufferSize(window1, &width, &height);
+	glfwGetFramebufferSize(window, &width, &height);
 	glViewport(0, 0, width, height);
 	//glOrtho(0, 1, 0, 1, -1.0, 1.0);
 
 	controller.addListener(listener);
 
 	// 윈도우가 닫힐 때까지 반복
-	while (!glfwWindowShouldClose(window1))
+	while (!glfwWindowShouldClose(window))
 	{
 		/* Make the window's context current */
-		glfwMakeContextCurrent(window1);
+		glfwMakeContextCurrent(window);
 		glClearColor(0, 0, 0, 1);	// black background
 
-		if(scene == 1)MyComponents::drawScene(window1, listener);
-		else MyComponents::drawScene2(window1, listener);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+		if (interfaceA) MyComponent::drawInterfaceA();
+		if (interfaceB) MyComponent::drawInterfaceB();
+
+		MyComponent::drawScene(window, listener);
+
+		/* Swap front and back buffers(Double buffering) */
+		glfwSwapBuffers(window);
+
+		/* OS 이벤트 감지 */
+		glfwPollEvents();
+
+		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 	glfwTerminate();
 

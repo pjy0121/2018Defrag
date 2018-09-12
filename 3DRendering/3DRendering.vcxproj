@@ -24,7 +24,7 @@
     <ClCompile Include="MyListener.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="MyComponents.h" />
+    <ClInclude Include="MyComponent.h" />
     <ClInclude Include="MyFile.h" />
     <ClInclude Include="MyListener.h" />
     <ClInclude Include="MyObject.h" />

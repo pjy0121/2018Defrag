@@ -6,7 +6,7 @@
 #include <chrono>         // std::chrono::seconds
 #include "MyListener.h"
 
-namespace MyComponents
+namespace MyComponent
 {
 	glm::vec3 center(0.0f, 0.0f, 0.0f);
 	float rotationDegreeY = 0.0f;
@@ -95,13 +95,94 @@ namespace MyComponents
 		glEnd();
 	}
 
+	// 사용자 인터페이스 화면 그리기
+	void drawInterfaceA()
+	{
+		////// 그림 그리는 부분
+		glPointSize(100.0f);
+		glBegin(GL_POINTS);
+		// R
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(-0.7f, 0.7f, 0.0f);
+
+		// G
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(-0.5f, 0.7f, 0.0f);
+
+		// B
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(-0.3f, 0.7f, 0.0f);
+
+		// Y
+		glColor3f(1.0f, 1.0f, 0.0f);
+		glVertex3f(-0.7f, 0.5f, 0.0f);
+
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glVertex3f(-0.5f, 0.5f, 0.0f);
+
+		glColor3f(0.0f, 1.0f, 1.0f);
+		glVertex3f(-0.3f, 0.5f, 0.0f);
+
+		glColor3f(0.1f, 0.1f, 0.1f);
+		glVertex3f(-0.7f, 0.3f, 0.0f);
+
+		glColor3f(0.4f, 0.4f, 0.4f);
+		glVertex3f(-0.5f, 0.3f, 0.0f);
+
+		glColor3f(0.7f, 0.7f, 0.7f);
+		glVertex3f(-0.3f, 0.3f, 0.0f);
+
+		glEnd();
+
+		glPointSize(10.0f);
+	}
+
+	void drawInterfaceB()
+	{
+		////// 그림 그리는 부분
+		glPointSize(100.0f);
+		glBegin(GL_POINTS);
+		// R
+		glColor3f(1.0f, 0.0f, 0.0f);
+		glVertex3f(-0.7f, 0.7f, 0.0f);
+
+		// G
+		glColor3f(0.0f, 1.0f, 0.0f);
+		glVertex3f(-0.5f, 0.7f, 0.0f);
+
+		// B
+		glColor3f(0.0f, 0.0f, 1.0f);
+		glVertex3f(-0.3f, 0.7f, 0.0f);
+
+		// Y
+		glColor3f(1.0f, 1.0f, 0.0f);
+		glVertex3f(-0.7f, 0.5f, 0.0f);
+
+		glColor3f(1.0f, 0.0f, 1.0f);
+		glVertex3f(-0.5f, 0.5f, 0.0f);
+
+		glColor3f(0.0f, 1.0f, 1.0f);
+		glVertex3f(-0.3f, 0.5f, 0.0f);
+
+		glColor3f(0.1f, 0.1f, 0.1f);
+		glVertex3f(-0.7f, 0.3f, 0.0f);
+
+		glColor3f(0.4f, 0.4f, 0.4f);
+		glVertex3f(-0.5f, 0.3f, 0.0f);
+
+		glColor3f(0.7f, 0.7f, 0.7f);
+		glVertex3f(-0.3f, 0.3f, 0.0f);
+
+		glEnd();
+
+		glPointSize(10.0f);
+	}
+
 	// 화면 그리기
 	void drawScene(GLFWwindow *window, const MyListener& L)
 	{
 		glLineWidth(10.0f);
 		glPointSize(L.size);
-
-		glClear(GL_COLOR_BUFFER_BIT);
 
 		glTranslatef(center.x, center.y, center.z);
 		glRotatef(rotationDegreeX, 1.0f, 0.0f, 0.0f);
@@ -109,9 +190,8 @@ namespace MyComponents
 
 		glScalef(scaleSize, scaleSize, scaleSize);	// 확대 및 축소
 
-		
 		////// 그림 그리는 부분
-		drawHex();	// 정육면체 그리기
+		drawHex();		// 정육면체 그리기
 
 		glBegin(GL_LINE_STRIP);
 		glColor3f(1.0f, 0.0f, 0.0f);	// default color
@@ -127,33 +207,7 @@ namespace MyComponents
 		glPointSize(abs(L.currentPos.z) * 25.0f);	// 포인터 사이즈 조절
 		glBegin(GL_POINTS);
 		drawPoint(L.currentPos, glm::vec3(1.0f, 1.0f, 1.0f), 1.0f);
+		
 		glEnd();
-
-		/* Swap front and back buffers(Double buffering) */
-		glfwSwapBuffers(window);
-
-		/* OS 이벤트 감지 */
-		glfwPollEvents();
-
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
-	}
-
-	// 화면 그리기
-	void drawScene2(GLFWwindow *window, const MyListener& L)
-	{
-		glLineWidth(10.0f);
-		glPointSize(L.size);
-
-		glClear(GL_COLOR_BUFFER_BIT);
-
-		drawAxes();	// 정육면체 그리기
-
-		/* Swap front and back buffers(Double buffering) */
-		glfwSwapBuffers(window);
-
-		/* OS 이벤트 감지 */
-		glfwPollEvents();
-
-		std::this_thread::sleep_for(std::chrono::milliseconds(100));
 	}
 }
