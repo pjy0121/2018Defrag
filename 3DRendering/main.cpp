@@ -29,6 +29,7 @@ using namespace Leap;
 ////// global variables
 Controller controller;
 MyListener listener;
+float rotSpeedX = 0.0f, rotSpeedY = 0.0f, rotSpeedZ = 0.0f;		// 회전 속도
 
 /*
 mode 0 : 그리기 모드
@@ -46,36 +47,84 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	{
 		listener.isStop = true;
 	}
-	// 그리기 시작(ENTER)
 	else if (key == GLFW_KEY_ENTER && action == GLFW_RELEASE)
 	{
 		// 그리기 모드
 		if(mode == 0)
-			listener.isStop = listener.isStop ? false : true;
+			listener.isStop = listener.isStop ? false : true;	// 그리기 시작/중단 toggle
 		
 		// 색깔 변경 모드
 		else if (mode == 1)
 		{
-			float ypos = listener.currentPos.y;
-
-			if (0.6f <= ypos && ypos <= 0.8f)
+			float yPos = listener.currentPos.y;
+			if(0.8f <= yPos && yPos <= 1.0f)
 				listener.color = vec3(1.0f, 0.0f, 0.0f);	// 빨
-			else if (0.4f <= ypos && ypos <= 0.6f)
+			else if (0.6f <= yPos && yPos <= 0.8f)
 				listener.color = vec3(1.0f, 128.0f / 255.0f, 0.0f);		// 주
-			else if (0.2f <= ypos && ypos <= 0.4f)
+			else if (0.4f <= yPos && yPos <= 0.6f)
 				listener.color = vec3(1.0f, 1.0f, 0.0f);	// 노
-			else if (0.0f <= ypos && ypos <= 0.2f)
+			else if (0.2f <= yPos && yPos <= 0.4f)
 				listener.color = vec3(0.0f, 1.0f, 0.0f);	// 초
-			else if (-0.2f <= ypos && ypos <= 0.0f)
+			else if (0.0f <= yPos && yPos <= 0.2f)
 				listener.color = vec3(0.0f, 0.0f, 1.0f);	// 파
-			else if (-0.4f <= ypos && ypos <= -0.2f)
+			else if (-0.2f <= yPos && yPos <= 0.0f)
 				listener.color = vec3(0.0f, 64.0f / 255.0f, 128.0f / 255.0f);	// 남
-			else if (-0.6f <= ypos && ypos <= -0.4f)
+			else if (-0.4f <= yPos && yPos <= -0.2f)
 				listener.color = vec3(128.0f / 255.0f, 0.0f, 1.0f);	// 보
-			else if (-0.8f <= ypos && ypos <= -0.6f)
+			else if (-0.6f <= yPos && yPos <= -0.4f)
 				listener.color = vec3(1.0f, 1.0f, 1.0f);	// 흰
 
 			mode = 0;	// 그리기 모드로 되돌아가기
+		}
+
+		else if (mode == 2)
+		{
+			float xPos = listener.currentPos.x, yPos = listener.currentPos.y;
+
+			if (0.55f <= yPos && yPos <= 0.75f)		// 화면 위쪽
+			{
+				// 파일 불러오기
+				if (-0.9f <= xPos && xPos <= -0.75f)
+				{
+					// 현재 그리던 그림을 flush
+					listener.posBuffer.clear();
+					listener.colorBuffer.clear();
+					listener.sizeBuffer.clear();
+
+					MyFile::loadFile(listener);
+				}
+				// 파일 저장
+				else if(-0.76f <= xPos && xPos <= -0.61f)
+					MyFile::saveFile(listener);
+
+
+				// X축 방향 회전
+				else if (-0.4f <= xPos && xPos <= -0.3f)
+					rotSpeedX += 0.3f;
+				else if (-0.29f <= xPos && xPos <= -0.19f)
+					rotSpeedX -= 0.3f;
+
+				// Y축 방향 회전
+				if (-0.1f <= xPos && xPos <= 0.0f)
+					rotSpeedY += 0.3f;
+				else if (0.01f <= xPos && xPos <= 0.11f)
+					rotSpeedY -= 0.3f;
+
+				// Z축 방향 회전
+				if (0.2f <= xPos && xPos <= 0.31f)
+					rotSpeedZ += 0.3f;
+				else if (0.31f <= xPos && xPos <= 0.41f)
+					rotSpeedZ -= 0.3f;
+			}
+
+			// 확대/축소
+			else if (0.6f <= xPos && xPos <= 0.8f)
+			{
+				if (0.15f <= yPos && yPos <= 0.35f)
+					MyComponent::scaleSize += 0.03f;
+				else if (-0.35f <= yPos && yPos <= -0.15f)
+					MyComponent::scaleSize -= 0.03f;
+			}
 		}
 	}
 
@@ -109,14 +158,14 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 	// x축 기준 회전 속도 조절(빠르게 : D, 느리게 : A)
 	else if (key == GLFW_KEY_D && action == GLFW_RELEASE)
-		MyComponent::rotationDegreeX += 1.0f;
+		rotSpeedX += 0.3f;
 	else if (key == GLFW_KEY_A && action == GLFW_RELEASE)
-		MyComponent::rotationDegreeX -= 1.0f;
+		rotSpeedX -= 0.3f;
 	// y축 기준 회전 속도 조절(빠르게 : W, 느리게 : S)
 	else if (key == GLFW_KEY_W && action == GLFW_RELEASE)
-		MyComponent::rotationDegreeY += 1.0f;
+		rotSpeedY += 0.3f;
 	else if (key == GLFW_KEY_S && action == GLFW_RELEASE)
-		MyComponent::rotationDegreeY -= 1.0f;
+		rotSpeedY -= 0.3f;
 
 	// 점의 크기(그림 전체의 두께) 설정(굵게 : T, 얇게 : Y)
 	else if (key == GLFW_KEY_T && action == GLFW_RELEASE)
@@ -224,16 +273,23 @@ int main()
 
 		if (mode == 1)
 		{
-			listener.currentPos.z = 1.0f;	// 포인터 크기 고정
 			MyComponent::drawMode1();
+			MyComponent::drawPointer(listener);
 		}
-		if (mode == 2) 
+		if (mode == 2)
 		{
-			listener.currentPos.z = 1.0f;	// 포인터 크기 고정
 			MyComponent::drawMode2();
+			MyComponent::drawPointer(listener);
 		}
 
+		MyComponent::rotationDegreeX += rotSpeedX;
+		MyComponent::rotationDegreeY += rotSpeedY;
+		MyComponent::rotationDegreeZ += rotSpeedZ;
+
+		glPushMatrix();
 		MyComponent::drawScene(window, listener);
+		if(mode == 0) MyComponent::drawPointer(listener);
+		glPopMatrix();
 
 		/* Swap front and back buffers(Double buffering) */
 		glfwSwapBuffers(window);

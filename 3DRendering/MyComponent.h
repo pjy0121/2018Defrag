@@ -9,8 +9,9 @@
 namespace MyComponent
 {
 	glm::vec3 center(0.0f, 0.0f, 0.0f);
-	float rotationDegreeY = 0.0f;
 	float rotationDegreeX = 0.0f;
+	float rotationDegreeY = 0.0f;
+	float rotationDegreeZ = 0.0f;
 	float scaleSize = 1.0f;
 
 	void drawPoint(glm::vec3 pos, glm::vec3 color, float pointSize)
@@ -95,11 +96,11 @@ namespace MyComponent
 		glEnd();
 	}
 
-	// 정사각형 그리기 함수(변의 길이 : size)
-	void drawSquare(float x1, float y1, float size)
+	// 사각형 그리기 함수(변의 길이 : width*height)
+	void drawSquare(float x1, float y1, float width, float height)
 	{
-		float x2 = x1 + size;
-		float y2 = y1 + size;
+		float x2 = x1 + width;
+		float y2 = y1 + height;
 
 		glBegin(GL_POLYGON);
 
@@ -116,72 +117,67 @@ namespace MyComponent
 	{
 		////// 그림 그리는 부분
 		glColor3f(1.0f, 0.0f, 0.0f);	// 빨
-		drawSquare(-1.0f, 0.6f, 0.2f);
+		drawSquare(-1.0f, 0.8f, 0.2f, 0.2f);
 
 		glColor3f(1.0f, 128.0f/255.0f, 0.0f);	// 주
-		drawSquare(-1.0f, 0.4f, 0.2f);
+		drawSquare(-1.0f, 0.6f, 0.2f, 0.2f);
 
 		glColor3f(1.0f, 1.0f, 0.0f);	// 노
-		drawSquare(-1.0f, 0.2f, 0.2f);
+		drawSquare(-1.0f, 0.4f, 0.2f, 0.2f);
 
 		glColor3f(0.0f, 1.0f, 0.0f);	// 초
-		drawSquare(-1.0f, 0.0f, 0.2f);
+		drawSquare(-1.0f, 0.2f, 0.2f, 0.2f);
 
 		glColor3f(0.0f, 0.0f, 1.0f);	// 파
-		drawSquare(-1.0f, -0.2f, 0.2f);
+		drawSquare(-1.0f, 0.0f, 0.2f, 0.2f);
 
 		glColor3f(0.0f, 64.0f/255.0f, 128.0f/255.0f);	// 남
-		drawSquare(-1.0f, -0.4f, 0.2f);
+		drawSquare(-1.0f, -0.2f, 0.2f, 0.2f);
 
 		glColor3f(128.0f/255.0f, 0.0f, 1.0f);	// 보
-		drawSquare(-1.0f, -0.6f, 0.2f);
+		drawSquare(-1.0f, -0.4f, 0.2f, 0.2f);
 
 		glColor3f(1.0f, 1.0f, 1.0f);	// 흰
-		drawSquare(-1.0f, -0.8f, 0.2f);
-
-		glPointSize(10.0f);
+		drawSquare(-1.0f, -0.6f, 0.2f, 0.2f);
 	}
 
 	// 오브젝트 변환 모드
 	void drawMode2()
 	{
 		////// 그림 그리는 부분
-		glPointSize(100.0f);
+		glColor3f(1.0f, 0.0f, 0.0f);	// 빨
+		drawSquare(-0.9f, 0.55f, 0.15f, 0.2f);
+
+		glColor3f(1.0f, 1.0f, 0.0f);	// 노
+		drawSquare(-0.75f, 0.55f, 0.15f, 0.2f);
+
+		glColor3f(0.0f, 1.0f, 0.0f);	// 초
+		drawSquare(-0.4f, 0.55f, 0.1f, 0.2f);
+		drawSquare(-0.29f, 0.55f, 0.1f, 0.2f);
+
+		glColor3f(0.0f, 0.0f, 1.0f);	// 파
+		drawSquare(-0.1f, 0.55f, 0.1f, 0.2f);
+		drawSquare(0.01f, 0.55f, 0.1f, 0.2f);
+
+		glColor3f(0.0f, 64.0f / 255.0f, 128.0f / 255.0f);	// 남
+		drawSquare(0.2f, 0.55f, 0.1f, 0.2f);
+		drawSquare(0.31f, 0.55f, 0.1f, 0.2f);
+
+		glColor3f(1.0f, 1.0f, 1.0f);	// 흰
+		drawSquare(0.6f, 0.15f, 0.15f, 0.2f);
+
+		glColor3f(1.0f, 1.0f, 1.0f);	// 흰
+		drawSquare(0.6f, -0.35f, 0.15f, 0.2f);
+	}
+
+	void drawPointer(const MyListener& L)
+	{
+		// 현재 위치 포인터 그리기
+		glPointSize(L.currentPos.z * 15 + 20.0f);	// 포인터 사이즈 조절
+
 		glBegin(GL_POINTS);
-		// R
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glVertex3f(-0.7f, 0.7f, 0.0f);
-
-		// G
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(-0.5f, 0.7f, 0.0f);
-
-		// B
-		glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(-0.3f, 0.7f, 0.0f);
-
-		// Y
-		glColor3f(1.0f, 1.0f, 0.0f);
-		glVertex3f(-0.7f, 0.5f, 0.0f);
-
-		glColor3f(1.0f, 0.0f, 1.0f);
-		glVertex3f(-0.5f, 0.5f, 0.0f);
-
-		glColor3f(0.0f, 1.0f, 1.0f);
-		glVertex3f(-0.3f, 0.5f, 0.0f);
-
-		glColor3f(0.1f, 0.1f, 0.1f);
-		glVertex3f(-0.7f, 0.3f, 0.0f);
-
-		glColor3f(0.4f, 0.4f, 0.4f);
-		glVertex3f(-0.5f, 0.3f, 0.0f);
-
-		glColor3f(0.7f, 0.7f, 0.7f);
-		glVertex3f(-0.3f, 0.3f, 0.0f);
-
+		drawPoint(L.currentPos, glm::vec3(1.0f, 1.0f, 1.0f), 1.0f);
 		glEnd();
-
-		glPointSize(10.0f);
 	}
 
 	// 화면 그리기
@@ -189,10 +185,11 @@ namespace MyComponent
 	{
 		glLineWidth(10.0f);
 		glPointSize(L.size);
-
 		glTranslatef(center.x, center.y, center.z);
+
 		glRotatef(rotationDegreeX, 1.0f, 0.0f, 0.0f);
 		glRotatef(rotationDegreeY, 0.0f, 1.0f, 0.0f);
+		glRotatef(rotationDegreeZ, 0.0f, 0.0f, 1.0f);
 
 		glScalef(scaleSize, scaleSize, scaleSize);	// 확대 및 축소
 
@@ -207,13 +204,6 @@ namespace MyComponent
 		{
 			drawPoint(L.posBuffer[i], L.colorBuffer[i], L.sizeBuffer[i]);
 		}
-		glEnd();
-
-		// 현재 위치 포인터 그리기
-		glPointSize(L.currentPos.z * 15 + 20.0f);	// 포인터 사이즈 조절
-		glBegin(GL_POINTS);
-		drawPoint(L.currentPos, glm::vec3(1.0f, 1.0f, 1.0f), 1.0f);
-		
 		glEnd();
 	}
 }

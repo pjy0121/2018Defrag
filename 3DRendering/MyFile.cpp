@@ -94,12 +94,13 @@ wchar_t* MyFile::wchar_File_Save_Name()//(HINSTANCE hInstance, HINSTANCE, PWSTR 
 // 파일 쓰기 함수
 void MyFile::saveFile(const MyListener & L)
 {
-	
 	wchar_t* get_file_name = wchar_File_Save_Name();
 	std::string line;
 	std::wstring string(get_file_name);
-	std::wstring get_wstring_filename= get_file_name;
-	std::ofstream outputFile(get_wstring_filename + L".txt");
+	std::wstring get_wstring_filename = get_file_name;
+	if (!get_wstring_filename.find_first_of('.'))
+		get_wstring_filename += L".txt";
+	std::ofstream outputFile(get_wstring_filename);
 
 	for (int i = 0; i < L.posBuffer.size(); i++)
 		outputFile << L.posBuffer[i].x << " " << L.posBuffer[i].y << " " << L.posBuffer[i].z << " " <<	// 점의 위치 저장
