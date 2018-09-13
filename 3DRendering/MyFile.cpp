@@ -46,21 +46,61 @@ wchar_t * MyFile::wchar_File_Select_Name()//(HINSTANCE hInstance, HINSTANCE, PWS
 	}
 	return ret_wchar;
 }
+// save 파일 선택창 open
+wchar_t* MyFile::wchar_File_Save_Name()//(HINSTANCE hInstance, HINSTANCE, PWSTR pCmdLine, int nCmdShow)
+{
+	static wchar_t *ret_wchar;
+	HRESULT hr = CoInitializeEx(NULL, COINIT_APARTMENTTHREADED | COINIT_DISABLE_OLE1DDE);
+	if (SUCCEEDED(hr))
+	{
+		IFileSaveDialog *pFileOpen;
+
+		// Create the FileOpenDialog object.
+		hr = CoCreateInstance(CLSID_FileSaveDialog, NULL, CLSCTX_ALL,
+			IID_IFileSaveDialog, reinterpret_cast<void**>(&pFileOpen));
+
+		if (SUCCEEDED(hr))
+		{
+
+			// Show the Open dialog box.
+			hr = pFileOpen->Show(NULL);
+
+			// Get the file name from the dialog box.
+			if (SUCCEEDED(hr))
+			{
+				IShellItem *pItem;
+				hr = pFileOpen->GetResult(&pItem);
+				if (SUCCEEDED(hr))
+				{
+					PWSTR pszFilePath;
+					hr = pItem->GetDisplayName(SIGDN_FILESYSPATH, &pszFilePath);
+
+					// Display the file name to the user.
+					if (SUCCEEDED(hr))
+					{
+						ret_wchar = pszFilePath;
+						CoTaskMemFree(pszFilePath);
+					}
+					pItem->Release();
+				}
+			}
+			pFileOpen->Release();
+		}
+		CoUninitialize();
+	}
+	return ret_wchar;
+}
 
 // 파일 쓰기 함수
 void MyFile::saveFile(const MyListener & L)
 {
-	SYSTEMTIME lst;
-	GetLocalTime(&lst);
-	std::string now_systime = "[" + std::to_string(lst.wYear);
-	now_systime += "-" + std::to_string(lst.wMonth);
-	now_systime += "-" + std::to_string(lst.wDay);
-	now_systime += "] " + std::to_string(lst.wHour);
-	now_systime += "시 " + std::to_string(lst.wMinute);
-	now_systime += "분 " + std::to_string(lst.wSecond);
-	now_systime += "초.txt";
+	
+	wchar_t* get_file_name = wchar_File_Save_Name();
+	std::string line;
+	std::wstring string(get_file_name);
+	std::wstring get_wstring_filename= get_file_name;
+	std::ofstream outputFile(get_wstring_filename + L".txt");
 
-	std::ofstream outputFile(now_systime);
 	for (int i = 0; i < L.posBuffer.size(); i++)
 		outputFile << L.posBuffer[i].x << " " << L.posBuffer[i].y << " " << L.posBuffer[i].z << " " <<	// 점의 위치 저장
 		L.colorBuffer[i].x << " " << L.colorBuffer[i].y << " " << L.colorBuffer[i].z << " " <<		// 점의 색깔 저장
