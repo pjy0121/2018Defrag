@@ -19,8 +19,8 @@
 #include "MyFile.h"
 #include "MyComponent.h"
 
-const int width_window = 1280;
-const int height_window = 960;
+const int width_window = 2560;
+const int height_window = 1920;
 
 using namespace std;
 using namespace glm;
@@ -94,7 +94,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 					MyFile::loadFile(listener);
 				}
 				// 파일 저장
-				else if(-0.76f <= xPos && xPos <= -0.61f)
+				else if(-0.74f <= xPos && xPos <= -0.59f)
 					MyFile::saveFile(listener);
 
 
@@ -227,9 +227,11 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	*/
 }
 
-int main()
+int main(int argc, char* argv[])
 {
 	srand((unsigned)time(NULL));
+	glutInit(&argc, argv);
+	glutInitDisplayMode(GLUT_DEPTH | GLUT_SINGLE | GLUT_RGBA);
 
 	GLFWwindow *window = nullptr;
 

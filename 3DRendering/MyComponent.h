@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <thread>         // std::this_thread::sleep_for
 #include <chrono>         // std::chrono::seconds
+#include <GL/glut.h>
 #include "MyListener.h"
 
 namespace MyComponent
@@ -13,6 +14,18 @@ namespace MyComponent
 	float rotationDegreeY = 0.0f;
 	float rotationDegreeZ = 0.0f;
 	float scaleSize = 1.0f;
+
+	// 폰트 그리기(화면에 텍스트 넣기)
+	void renderBitmapCharacter(float x, float y, float z, void *font, char *string)
+	{
+		char *c;
+		glColor3f(1.0f, 1.0f, 1.0f);
+		glRasterPos3f(x, y, z);
+		for (c = string; *c != '\0'; c++)
+		{
+			glutBitmapCharacter(font, *c);
+		}
+	}
 
 	void drawPoint(glm::vec3 pos, glm::vec3 color, float pointSize)
 	{
@@ -145,29 +158,45 @@ namespace MyComponent
 	void drawMode2()
 	{
 		////// 그림 그리는 부분
-		glColor3f(1.0f, 0.0f, 0.0f);	// 빨
+		renderBitmapCharacter(-0.9f, 0.8f, 0.0f, GLUT_BITMAP_HELVETICA_18, "File");
+		glColor3f(0.5f, 0.5f, 0.5f);	// 회
 		drawSquare(-0.9f, 0.55f, 0.15f, 0.2f);
+		renderBitmapCharacter(-0.88f, 0.65f, 0.0f, GLUT_BITMAP_HELVETICA_18, "Load File");
 
-		glColor3f(1.0f, 1.0f, 0.0f);	// 노
-		drawSquare(-0.75f, 0.55f, 0.15f, 0.2f);
+		glColor3f(0.5f, 0.5f, 0.5f);	// 회
+		drawSquare(-0.74f, 0.55f, 0.15f, 0.2f);
+		renderBitmapCharacter(-0.73f, 0.65f, 0.0f, GLUT_BITMAP_HELVETICA_18, "Save File");
 
-		glColor3f(0.0f, 1.0f, 0.0f);	// 초
+		renderBitmapCharacter(-0.4f, 0.8f, 0.0f, GLUT_BITMAP_HELVETICA_18, "Rotation");
+		glColor3f(1.0f, 0.0f, 0.0f);	// 빨
 		drawSquare(-0.4f, 0.55f, 0.1f, 0.2f);
 		drawSquare(-0.29f, 0.55f, 0.1f, 0.2f);
+		renderBitmapCharacter(-0.36f, 0.65f, 0.0f, GLUT_BITMAP_HELVETICA_18, "+");
+		renderBitmapCharacter(-0.25f, 0.65f, 0.0f, GLUT_BITMAP_HELVETICA_18, "-");
+		renderBitmapCharacter(-0.36f, 0.58, 0.0f, GLUT_BITMAP_HELVETICA_18, "X Rotation");
 
-		glColor3f(0.0f, 0.0f, 1.0f);	// 파
+		glColor3f(0.0f, 1.0f, 0.0f);	// 초
 		drawSquare(-0.1f, 0.55f, 0.1f, 0.2f);
 		drawSquare(0.01f, 0.55f, 0.1f, 0.2f);
+		renderBitmapCharacter(-0.06f, 0.65f, 0.0f, GLUT_BITMAP_HELVETICA_18, "+");
+		renderBitmapCharacter(0.05f, 0.65f, 0.0f, GLUT_BITMAP_HELVETICA_18, "-");
+		renderBitmapCharacter(-0.06f, 0.58, 0.0f, GLUT_BITMAP_HELVETICA_18, "Y Rotation");
 
-		glColor3f(0.0f, 64.0f / 255.0f, 128.0f / 255.0f);	// 남
+		glColor3f(0.0f, 0.0f, 1.0f);	// 파
 		drawSquare(0.2f, 0.55f, 0.1f, 0.2f);
 		drawSquare(0.31f, 0.55f, 0.1f, 0.2f);
+		renderBitmapCharacter(0.24f, 0.65f, 0.0f, GLUT_BITMAP_HELVETICA_18, "+");
+		renderBitmapCharacter(0.35f, 0.65f, 0.0f, GLUT_BITMAP_HELVETICA_18, "-");
+		renderBitmapCharacter(0.24f, 0.58, 0.0f, GLUT_BITMAP_HELVETICA_18, "Z Rotation");
 
-		glColor3f(1.0f, 1.0f, 1.0f);	// 흰
+		renderBitmapCharacter(0.6f, 0.0f, 0.0f, GLUT_BITMAP_HELVETICA_18, "Object Size");
+		glColor3f(0.5f, 0.5f, 0.5f);	// 회
 		drawSquare(0.6f, 0.15f, 0.15f, 0.2f);
+		renderBitmapCharacter(0.67f, 0.25f, 0.0f, GLUT_BITMAP_HELVETICA_18, "+");
 
-		glColor3f(1.0f, 1.0f, 1.0f);	// 흰
+		glColor3f(0.5f, 0.5f, 0.5f);	// 회
 		drawSquare(0.6f, -0.35f, 0.15f, 0.2f);
+		renderBitmapCharacter(0.67f, -0.25f, 0.0f, GLUT_BITMAP_HELVETICA_18, "-");
 	}
 
 	void drawPointer(const MyListener& L)
