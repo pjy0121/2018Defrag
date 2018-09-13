@@ -40,6 +40,7 @@ void MyListener::onFrame(const Leap::Controller & controller)
 
 	Leap::Tool tool = frame.tools()[0];
 	Leap::Vector tip = tool.tipPosition();
+
 	if (tool.isValid())
 	{
 		glm::vec3 uni = uniform(glm::vec3(tip.x, tip.y, tip.z));	// 정규화된 좌표

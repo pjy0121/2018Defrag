@@ -29,10 +29,13 @@ using namespace Leap;
 ////// global variables
 Controller controller;
 MyListener listener;
-// 인터페이스 on/off
-bool interfaceA = false;
-bool interfaceB = false;
 
+/*
+mode 0 : 그리기 모드
+mode 1 : 색깔 변경 모드
+mode 2 : 오브젝트 변환 모드
+*/
+int mode = 0;
 
 ////// callbacks
 // key board input callback
@@ -40,10 +43,41 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 {
 	// 그리기 중단(TAB)
 	if (key == GLFW_KEY_TAB && action == GLFW_RELEASE)
+	{
 		listener.isStop = true;
+	}
 	// 그리기 시작(ENTER)
 	else if (key == GLFW_KEY_ENTER && action == GLFW_RELEASE)
-		listener.isStop = false;
+	{
+		// 그리기 모드
+		if(mode == 0)
+			listener.isStop = listener.isStop ? false : true;
+		
+		// 색깔 변경 모드
+		else if (mode == 1)
+		{
+			float ypos = listener.currentPos.y;
+
+			if (0.6f <= ypos && ypos <= 0.8f)
+				listener.color = vec3(1.0f, 0.0f, 0.0f);	// 빨
+			else if (0.4f <= ypos && ypos <= 0.6f)
+				listener.color = vec3(1.0f, 128.0f / 255.0f, 0.0f);		// 주
+			else if (0.2f <= ypos && ypos <= 0.4f)
+				listener.color = vec3(1.0f, 1.0f, 0.0f);	// 노
+			else if (0.0f <= ypos && ypos <= 0.2f)
+				listener.color = vec3(0.0f, 1.0f, 0.0f);	// 초
+			else if (-0.2f <= ypos && ypos <= 0.0f)
+				listener.color = vec3(0.0f, 0.0f, 1.0f);	// 파
+			else if (-0.4f <= ypos && ypos <= -0.2f)
+				listener.color = vec3(0.0f, 64.0f / 255.0f, 128.0f / 255.0f);	// 남
+			else if (-0.6f <= ypos && ypos <= -0.4f)
+				listener.color = vec3(128.0f / 255.0f, 0.0f, 1.0f);	// 보
+			else if (-0.8f <= ypos && ypos <= -0.6f)
+				listener.color = vec3(1.0f, 1.0f, 1.0f);	// 흰
+
+			mode = 0;	// 그리기 모드로 되돌아가기
+		}
+	}
 
 	// 현재의 그림을 파일로 저장(F)
 	else if (key == GLFW_KEY_F && action == GLFW_RELEASE)
@@ -112,14 +146,23 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		else MyComponent::scaleSize = 1.0f;
 	}
 
+	// 모드 변경
+	// 방향키 ↑ => mode 0, 1 toggle
 	else if (key == GLFW_KEY_UP && action == GLFW_RELEASE)
 	{
-		interfaceA = interfaceA ? false : true;
-	}
+		listener.isStop = true;		// 그리기 중단
 
+		if (mode != 0)
+			mode = 0;
+		else mode = 1;
+	}
+	// 방향키 ↓ => mode 0, 2 toggle
 	else if (key == GLFW_KEY_DOWN && action == GLFW_RELEASE)
 	{
-		interfaceB = interfaceB ? false : true;
+		listener.isStop = true;		// 그리기 중단
+		if (mode != 0)
+			mode = 0;
+		else mode = 2;
 	}
 
 	/*
@@ -133,13 +176,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 	else if (key == GLFW_KEY_RIGHT && action == GLFW_RELEASE)
 		center.y -= 0.1f;
 	*/
-}
-
-// mouse button callback
-void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
-{
-	if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS)
-		listener.color = vec3(0.0f, 0.0f, 1.0f);
 }
 
 int main()
@@ -164,9 +200,6 @@ int main()
 	////// callbacks
 	// key board input callback
 	glfwSetKeyCallback(window, key_callback);
-	// mouse button callback
-	glfwSetMouseButtonCallback(window, mouse_button_callback);
-
 
 	////// 선 두께, 점 크기 조정 관련
 	GLfloat LineRange[2];
@@ -189,8 +222,16 @@ int main()
 
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		if (interfaceA) MyComponent::drawInterfaceA();
-		if (interfaceB) MyComponent::drawInterfaceB();
+		if (mode == 1)
+		{
+			listener.currentPos.z = 1.0f;	// 포인터 크기 고정
+			MyComponent::drawMode1();
+		}
+		if (mode == 2) 
+		{
+			listener.currentPos.z = 1.0f;	// 포인터 크기 고정
+			MyComponent::drawMode2();
+		}
 
 		MyComponent::drawScene(window, listener);
 

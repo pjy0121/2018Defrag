@@ -95,49 +95,55 @@ namespace MyComponent
 		glEnd();
 	}
 
-	// 사용자 인터페이스 화면 그리기
-	void drawInterfaceA()
+	// 정사각형 그리기 함수(변의 길이 : size)
+	void drawSquare(float x1, float y1, float size)
 	{
-		////// 그림 그리는 부분
-		glPointSize(100.0f);
-		glBegin(GL_POINTS);
-		// R
-		glColor3f(1.0f, 0.0f, 0.0f);
-		glVertex3f(-0.7f, 0.7f, 0.0f);
+		float x2 = x1 + size;
+		float y2 = y1 + size;
 
-		// G
-		glColor3f(0.0f, 1.0f, 0.0f);
-		glVertex3f(-0.5f, 0.7f, 0.0f);
+		glBegin(GL_POLYGON);
 
-		// B
-		glColor3f(0.0f, 0.0f, 1.0f);
-		glVertex3f(-0.3f, 0.7f, 0.0f);
-
-		// Y
-		glColor3f(1.0f, 1.0f, 0.0f);
-		glVertex3f(-0.7f, 0.5f, 0.0f);
-
-		glColor3f(1.0f, 0.0f, 1.0f);
-		glVertex3f(-0.5f, 0.5f, 0.0f);
-
-		glColor3f(0.0f, 1.0f, 1.0f);
-		glVertex3f(-0.3f, 0.5f, 0.0f);
-
-		glColor3f(0.1f, 0.1f, 0.1f);
-		glVertex3f(-0.7f, 0.3f, 0.0f);
-
-		glColor3f(0.4f, 0.4f, 0.4f);
-		glVertex3f(-0.5f, 0.3f, 0.0f);
-
-		glColor3f(0.7f, 0.7f, 0.7f);
-		glVertex3f(-0.3f, 0.3f, 0.0f);
+		glVertex3f(x1, y1, 0.0f);
+		glVertex3f(x2, y1, 0.0f);
+		glVertex3f(x2, y2, 0.0f);
+		glVertex3f(x1, y2, 0.0f);
 
 		glEnd();
+	}
+
+	// 색깔 변경 모드
+	void drawMode1()
+	{
+		////// 그림 그리는 부분
+		glColor3f(1.0f, 0.0f, 0.0f);	// 빨
+		drawSquare(-1.0f, 0.6f, 0.2f);
+
+		glColor3f(1.0f, 128.0f/255.0f, 0.0f);	// 주
+		drawSquare(-1.0f, 0.4f, 0.2f);
+
+		glColor3f(1.0f, 1.0f, 0.0f);	// 노
+		drawSquare(-1.0f, 0.2f, 0.2f);
+
+		glColor3f(0.0f, 1.0f, 0.0f);	// 초
+		drawSquare(-1.0f, 0.0f, 0.2f);
+
+		glColor3f(0.0f, 0.0f, 1.0f);	// 파
+		drawSquare(-1.0f, -0.2f, 0.2f);
+
+		glColor3f(0.0f, 64.0f/255.0f, 128.0f/255.0f);	// 남
+		drawSquare(-1.0f, -0.4f, 0.2f);
+
+		glColor3f(128.0f/255.0f, 0.0f, 1.0f);	// 보
+		drawSquare(-1.0f, -0.6f, 0.2f);
+
+		glColor3f(1.0f, 1.0f, 1.0f);	// 흰
+		drawSquare(-1.0f, -0.8f, 0.2f);
 
 		glPointSize(10.0f);
 	}
 
-	void drawInterfaceB()
+	// 오브젝트 변환 모드
+	void drawMode2()
 	{
 		////// 그림 그리는 부분
 		glPointSize(100.0f);
@@ -204,7 +210,7 @@ namespace MyComponent
 		glEnd();
 
 		// 현재 위치 포인터 그리기
-		glPointSize(abs(L.currentPos.z) * 25.0f);	// 포인터 사이즈 조절
+		glPointSize(L.currentPos.z * 15 + 20.0f);	// 포인터 사이즈 조절
 		glBegin(GL_POINTS);
 		drawPoint(L.currentPos, glm::vec3(1.0f, 1.0f, 1.0f), 1.0f);
 		
