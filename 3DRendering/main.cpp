@@ -1,6 +1,7 @@
 #ifndef UNICODE
 #define UNICODE
 #endif 
+#pragma comment(linker, "/SUBSYSTEM:windows /ENTRY:mainCRTStartup")
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -19,8 +20,8 @@
 #include "MyFile.h"
 #include "MyComponent.h"
 
-const int width_window = 2560;
-const int height_window = 1920;
+const int width_window = 1280;		// 1280*1.2
+const int height_window = 960;		// 960*1.2
 
 using namespace std;
 using namespace glm;
@@ -84,7 +85,7 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 			if (0.55f <= yPos && yPos <= 0.75f)		// 화면 위쪽
 			{
 				// 파일 불러오기
-				if (-0.9f <= xPos && xPos <= -0.75f)
+				if (-0.6f <= xPos && xPos <= -0.45f)
 				{
 					// 현재 그리던 그림을 flush
 					listener.posBuffer.clear();
@@ -94,26 +95,26 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 					MyFile::loadFile(listener);
 				}
 				// 파일 저장
-				else if(-0.74f <= xPos && xPos <= -0.59f)
+				else if(-0.44f <= xPos && xPos <= -0.29f)
 					MyFile::saveFile(listener);
 
 
 				// X축 방향 회전
-				else if (-0.4f <= xPos && xPos <= -0.3f)
+				else if (-0.1f <= xPos && xPos <= 0.0f)
 					rotSpeedX += 0.3f;
-				else if (-0.29f <= xPos && xPos <= -0.19f)
+				else if (0.01f <= xPos && xPos <= 0.11f)
 					rotSpeedX -= 0.3f;
 
 				// Y축 방향 회전
-				if (-0.1f <= xPos && xPos <= 0.0f)
+				if (0.2f <= xPos && xPos <= 0.3f)
 					rotSpeedY += 0.3f;
-				else if (0.01f <= xPos && xPos <= 0.11f)
+				else if (0.31f <= xPos && xPos <= 0.41f)
 					rotSpeedY -= 0.3f;
 
 				// Z축 방향 회전
-				if (0.2f <= xPos && xPos <= 0.31f)
+				if (0.5f <= xPos && xPos <= 0.61f)
 					rotSpeedZ += 0.3f;
-				else if (0.31f <= xPos && xPos <= 0.41f)
+				else if (0.61f <= xPos && xPos <= 0.71f)
 					rotSpeedZ -= 0.3f;
 			}
 
@@ -142,9 +143,9 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 		MyFile::loadFile(listener);		// 파일 불러오기
 	}
 	
-	// 화면 지우기(B)
+	// 프로그램 초기화(B)
 	else if (key == GLFW_KEY_B && action == GLFW_RELEASE) {
-		// 버퍼들 비우기
+		// 화면 지우기(버퍼들 비우기)
 		listener.posBuffer.clear();
 		listener.colorBuffer.clear();
 		listener.sizeBuffer.clear();
@@ -272,7 +273,7 @@ int main(int argc, char* argv[])
 		glClearColor(0, 0, 0, 1);	// black background
 
 		glClear(GL_COLOR_BUFFER_BIT);
-
+		
 		if (mode == 1)
 		{
 			MyComponent::drawMode1();
@@ -292,6 +293,8 @@ int main(int argc, char* argv[])
 		MyComponent::drawScene(window, listener);
 		if(mode == 0) MyComponent::drawPointer(listener);
 		glPopMatrix();
+
+		glEnd();
 
 		/* Swap front and back buffers(Double buffering) */
 		glfwSwapBuffers(window);
