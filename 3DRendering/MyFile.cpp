@@ -6,17 +6,20 @@ void MyFile::saveFile(const MyListener & L)
 	My3DRendering::SaveForm saveForm;
 	saveForm.ShowDialog();
 	std::string filePath = saveForm.Response;
-	Console::WriteLine(gcnew String(filePath.c_str()));
+
+	if (filePath.compare("Cancel") == 0) {
+		return;
+	}
 
 	std::ofstream outputFile;
 	outputFile.open(filePath, std::ofstream::out);
 	
-
 	for (int i = 0; i < L.posBuffer.size(); i++) {
 			outputFile << L.posBuffer[i].x << " " << L.posBuffer[i].y << " " << L.posBuffer[i].z << " " <<	// 점의 위치 저장
 			L.colorBuffer[i].x << " " << L.colorBuffer[i].y << " " << L.colorBuffer[i].z << " " <<		// 점의 색깔 저장
 			L.sizeBuffer[i] << std::endl;	// 점의 크기 저장
 	}
+
 	outputFile.close();
 	//throw gcnew System::NotImplementedException();
 }
@@ -26,12 +29,22 @@ void MyFile::loadFile(const MyListener & L)
 	My3DRendering::OpenForm openForm;
 	openForm.ShowDialog();
 	std::string filePath = openForm.Response;
-	Console::WriteLine(gcnew String(filePath.c_str()));
+
+	if (filePath.compare("Cancel") == 0) {
+		return;
+	}
+
+
 
 	std::ifstream inputFile(filePath);
 
 	if (inputFile.is_open())
 	{
+		// flush current drawing before load file
+		L.posBuffer.clear();
+		L.colorBuffer.clear();
+		L.sizeBuffer.clear();
+
 		std::string a, b, c, d, e, f, g;
 		while (inputFile >> a >> b >> c >> d >> e >> f >> g)
 		{

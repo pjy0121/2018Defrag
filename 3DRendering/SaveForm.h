@@ -105,10 +105,15 @@ namespace My3DRendering {
 	private: System::Void SaveForm_Load(System::Object^  sender, System::EventArgs^  e) {
 		fileList->Items->Clear();
 
+		// if Directory is not existed, create new one
 		if (!Directory::Exists(".\\files")) {
 			Directory::CreateDirectory(".\\files");
 		}
+
+		// retrieve file list from directory
 		array<String^>^ files = Directory::GetFiles(".\\files");
+
+		fileList->Items->Add("Cancel");
 
 		for (int i = 0; i < files->Length; i++) {
 			fileList->Items->Add(files[i]);
@@ -120,9 +125,15 @@ namespace My3DRendering {
 		if (e->KeyCode == Keys::Enter) {
 			String^ file = fileList->SelectedItem->ToString();
 
+			if (file->Equals("Cancel")) {
+				Response = this->StringToSTD("Cancel");
+				this->Close();
+			}
+
 			if (file->Equals(newFileMenuString)) {
 				file = ".\\files\\"+DateTime::Today.ToShortDateString() + "-" + DateTime::Now.Hour + DateTime::Now.Minute + DateTime::Now.Second +".txt";
 			}
+
 			Response = this->StringToSTD(file);
 			this->Close();
 		}

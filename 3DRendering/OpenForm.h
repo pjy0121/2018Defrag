@@ -101,6 +101,12 @@ namespace My3DRendering {
 	private: System::Void fileList_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e) {
 		if (e->KeyCode == Keys::Enter) {
 			String^ file = fileList->SelectedItem->ToString();
+
+			if (file->Equals("Cancel")) {
+				Response = this->StringToSTD("Cancel");
+				this->Close();
+			}
+
 			Response = this->StringToSTD(file);
 			this->Close();
 		}
@@ -108,11 +114,15 @@ namespace My3DRendering {
 	private: System::Void OpenForm_Load(System::Object^  sender, System::EventArgs^  e) {
 		fileList->Items->Clear();
 
+		// if Directory is not existed, create new one
 		if (!Directory::Exists(".\\files")) {
 			Directory::CreateDirectory(".\\files");
 		}
 
-		array<String^>^ files = Directory::GetFiles(curPath);
+		// retrieve file list from directory
+		array<String^>^ files = Directory::GetFiles(".\\files");
+
+		fileList->Items->Add("Cancel");
 
 		for (int i = 0; i < files->Length; i++) {
 			fileList->Items->Add(files[i]);
