@@ -14,3 +14,7 @@
 *.txt
 *.user
 *.ipch
+*.res
+*.resources
+*.metagen
+*.asm

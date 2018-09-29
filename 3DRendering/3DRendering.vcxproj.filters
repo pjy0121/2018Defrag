@@ -1,0 +1,105 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="소스 파일">
+      <UniqueIdentifier>{4FC737F1-C7A5-4376-A066-2A32D752A2FF}</UniqueIdentifier>
+      <Extensions>cpp;c;cc;cxx;def;odl;idl;hpj;bat;asm;asmx</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일">
+      <UniqueIdentifier>{93995380-89BD-4b04-88EB-625FBE52EBFB}</UniqueIdentifier>
+      <Extensions>h;hh;hpp;hxx;hm;inl;inc;ipp;xsd</Extensions>
+    </Filter>
+    <Filter Include="리소스 파일">
+      <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+    <Filter Include="헤더 파일\LeapMotion">
+      <UniqueIdentifier>{6a8c3394-601f-4a78-9a83-c5992ddeb878}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\LeapMotion">
+      <UniqueIdentifier>{f8b3fec5-257c-4aa1-b623-b9a58266a247}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\Don%27t Touch">
+      <UniqueIdentifier>{4aaea105-975f-4520-853f-6fd99d967eb0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="소스 파일\IO">
+      <UniqueIdentifier>{1d533af5-de6f-44ae-957a-2c3640114c20}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\IO">
+      <UniqueIdentifier>{c2fd6300-a292-443e-91f4-c1258d785148}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\Don%27t Touch">
+      <UniqueIdentifier>{79fdd073-0e71-4db4-92f4-69aec0716cd1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="헤더 파일\OpenGL">
+      <UniqueIdentifier>{125f5373-8c70-481c-8333-f2a148c61554}</UniqueIdentifier>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="OpenForm.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="MyFile.h">
+      <Filter>헤더 파일\IO</Filter>
+    </ClInclude>
+    <ClInclude Include="MyListener.h">
+      <Filter>헤더 파일\LeapMotion</Filter>
+    </ClInclude>
+    <ClInclude Include="SaveForm.h">
+      <Filter>헤더 파일</Filter>
+    </ClInclude>
+    <ClInclude Include="Resource.h">
+      <Filter>헤더 파일\Don%27t Touch</Filter>
+    </ClInclude>
+    <ClInclude Include="stdafx.h">
+      <Filter>헤더 파일\Don%27t Touch</Filter>
+    </ClInclude>
+    <ClInclude Include="MyObject.h">
+      <Filter>헤더 파일\OpenGL</Filter>
+    </ClInclude>
+    <ClInclude Include="MyComponent.h">
+      <Filter>헤더 파일\OpenGL</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="app.rc">
+      <Filter>리소스 파일</Filter>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="AssemblyInfo.cpp">
+      <Filter>소스 파일\Don%27t Touch</Filter>
+    </ClCompile>
+    <ClCompile Include="OpenForm.cpp">
+      <Filter>소스 파일\Don%27t Touch</Filter>
+    </ClCompile>
+    <ClCompile Include="stdafx.cpp">
+      <Filter>소스 파일\Don%27t Touch</Filter>
+    </ClCompile>
+    <ClCompile Include="main.cpp">
+      <Filter>소스 파일</Filter>
+    </ClCompile>
+    <ClCompile Include="MyFile.cpp">
+      <Filter>소스 파일\IO</Filter>
+    </ClCompile>
+    <ClCompile Include="MyListener.cpp">
+      <Filter>소스 파일\LeapMotion</Filter>
+    </ClCompile>
+    <ClCompile Include="SaveForm.cpp">
+      <Filter>소스 파일\Don%27t Touch</Filter>
+    </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="app.ico">
+      <Filter>리소스 파일</Filter>
+    </Image>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="OpenForm.resx">
+      <Filter>리소스 파일</Filter>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SaveForm.resx">
+      <Filter>리소스 파일</Filter>
+    </EmbeddedResource>
+  </ItemGroup>
+</Project>

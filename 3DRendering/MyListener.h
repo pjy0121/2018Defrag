@@ -1,4 +1,5 @@
 #pragma once
+
 #include <Leap.h>
 #include <glm/glm.hpp>
 #include <vector>

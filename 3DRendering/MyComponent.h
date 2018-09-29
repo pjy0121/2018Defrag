@@ -2,10 +2,13 @@
 #include <glm/glm.hpp>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
-#include <thread>         // std::this_thread::sleep_for
 #include <chrono>         // std::chrono::seconds
 #include <GL/glut.h>
 #include "MyListener.h"
+
+// CLI는 <thread> 를 지원하지 않기 때문에 잠시 빼두었습니다.
+// temporarily disabled because CLI doesn't support <thread>
+//#include <thread>         // std::this_thread::sleep_for
 
 namespace MyComponent
 {
