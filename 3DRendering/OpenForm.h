@@ -127,6 +127,7 @@ namespace My3DRendering {
 		for (int i = 0; i < files->Length; i++) {
 			fileList->Items->Add(files[i]);
 		}
+		fileList->SelectedIndex = 0;
 	}
 	};
 }

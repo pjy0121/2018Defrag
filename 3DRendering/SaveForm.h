@@ -119,6 +119,7 @@ namespace My3DRendering {
 			fileList->Items->Add(files[i]);
 		}
 		fileList->Items->Add(newFileMenuString);
+		fileList->SelectedIndex = 0;
 	}
 
 	private: System::Void fileList_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e) {
