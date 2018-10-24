@@ -14,8 +14,19 @@
 *.txt
 *.user
 *.ipch
+<<<<<<< HEAD
 *.res
 *.resources
 *.metagen
 *.asm
 3DRendering/x64/Release/3DRendering.vcxprojAssemblyReference.cache
+=======
+3DRendering/x64/Release/app.res
+3DRendering/x64/Release/My3DRendering.SaveForm.resources
+3DRendering/x64/Release/My3DRendering.OpenForm.resources
+3DRendering/x64/Release/3DRendering.vcxprojAssemblyReference.cache
+3DRendering/x64/Release/3DRendering.vcxproj.GenerateResource.cache
+3DRendering/x64/Release/3DRendering.pch
+3DRendering/x64/Release/3DRendering.exe.metagen
+3DRendering/x64/Release/.NETFramework,Version=v4.6.1.AssemblyAttributes.asm
+>>>>>>> master
