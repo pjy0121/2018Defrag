@@ -25,11 +25,12 @@ namespace MyComponent
 		}
 	}
 
-	void drawPoint(glm::vec3 pos, glm::vec3 color, float pointSize)
+	void drawPoint(glm::vec3 pos, glm::vec3 color)
 	{
-		glPointSize(pointSize);
+		glBegin(GL_POINTS);
 		glColor3fv(&color[0]);
 		glVertex3fv(&pos[0]);
+		glEnd();
 	}
 
 	// 좌표축 그리기
@@ -204,10 +205,7 @@ namespace MyComponent
 	{
 		// 현재 위치 포인터 그리기
 		glPointSize(L.currentPos.z * 15 + 20.0f);	// 포인터 사이즈 조절
-
-		glBegin(GL_POINTS);
-		drawPoint(L.currentPos, glm::vec3(1.0f, 1.0f, 1.0f), 1.0f);
-		glEnd();
+		drawPoint(L.currentPos, glm::vec3(1.0f, 1.0f, 1.0f));
 	}
 
 	// 화면 그리기
@@ -225,16 +223,17 @@ namespace MyComponent
 	
 		////// 그림 그리는 부분
 		drawAxes();
+		// drawHex();
 
 		glLineWidth(10.0f);
-		glBegin(GL_POINTS);
 		glColor3f(1.0f, 0.0f, 0.0f);	// default color
 
 		// 파일이 없으면 빈 화면에서 시작
 		for (int i = 0; i < L.posBuffer.size(); i++)
 		{
-			drawPoint(L.posBuffer[i], L.colorBuffer[i], L.sizeBuffer[i]);
+			glPointSize(L.posBuffer[i].z * 15 + 20.0f);
+
+			drawPoint(L.posBuffer[i], L.colorBuffer[i]);
 		}
-		glEnd();
 	}
 }

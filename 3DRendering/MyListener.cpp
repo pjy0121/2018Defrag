@@ -48,12 +48,14 @@ void MyListener::onFrame(const Leap::Controller & controller)
 	{
 		glm::vec3 uni = uniform(glm::vec3(tip.x, tip.y, tip.z));	// 정규화된 좌표
 		// std::cout << uni.x << " " << uni.y << " " << uni.z << std::endl;		// 실시간 좌표 출력
+
 		if (!isStop)	// 사용자의 입력을 받고 있을 때
 		{
 			posBuffer.push_back(uni);		// 버퍼에 넣어줌
 			colorBuffer.push_back(color);
 			sizeBuffer.push_back(size);
 		}
+
 		currentPos = uni;	// 현재 위치 포인터
 	}
 }
