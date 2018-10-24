@@ -217,8 +217,8 @@ namespace MyComponent
 		glPointSize(L.size);
 		glTranslatef(center.x, center.y, center.z);
 
-		glRotatef(rotationDegreeX, 1.0f, 0.0f, 0.0f);
-		glRotatef(rotationDegreeY, 0.0f, 1.0f, 0.0f);
+		glRotatef(30 + rotationDegreeX, 1.0f, 0.0f, 0.0f);
+		glRotatef(-30 + rotationDegreeY, 0.0f, 1.0f, 0.0f);
 		glRotatef(rotationDegreeZ, 0.0f, 0.0f, 1.0f);
 
 		glScalef(scaleSize, scaleSize, scaleSize);	// 확대 및 축소

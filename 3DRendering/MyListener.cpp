@@ -3,6 +3,7 @@
 #include <Windows.h>
 #include <fstream>
 #include <iostream>
+#include <stack>
 
 glm::vec3 MyListener::color = glm::vec3(1.0f, 0.0f, 0.0f);
 float MyListener::size = 10.0f;
@@ -11,6 +12,7 @@ std::vector<glm::vec3> MyListener::colorBuffer;
 std::vector<float> MyListener::sizeBuffer;
 bool MyListener::isStop = true;
 glm::vec3 MyListener::currentPos;
+std::stack<int> MyListener::latest;
 
 void MyListener::onConnect(const Leap::Controller& controller) {
 	std::cout << " Connected" << std::endl;
@@ -55,3 +57,18 @@ void MyListener::onFrame(const Leap::Controller & controller)
 		currentPos = uni;	// 현재 위치 포인터
 	}
 }
+
+// 버퍼들과 변수들 초기화
+void MyListener::flush()
+{
+	posBuffer.clear();
+	colorBuffer.clear();
+	sizeBuffer.clear();
+
+	// 최근 그린 목록들 제거
+	while (!latest.empty())
+		latest.pop();
+
+	isStop = true;
+}
+
