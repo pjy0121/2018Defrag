@@ -35,25 +35,40 @@ void MyFile::loadFile(const MyListener & L)
 	}
 
 
-
 	std::ifstream inputFile(filePath);
 
-	if (inputFile.is_open())
-	{
-		// flush current drawing before load file
-		L.posBuffer.clear();
-		L.colorBuffer.clear();
-		L.sizeBuffer.clear();
+	if (filePath.find(".obj") != std::string::npos) {
+		system("pause");
+		/*
+		해야할일
+		+ MyListener 클래스에 obj input 할 vector 변수추가
+		+ 어떤 형식으로 input 되는지 여기에 코드로 작성
+		+ MyComponent.h 에 drawScene  -> obj vetor 변수  draw code 추가
+		*/
+		return;
 
-		std::string a, b, c, d, e, f, g;
-		while (inputFile >> a >> b >> c >> d >> e >> f >> g)
+	}
+	else if(filePath.find(".txt") != std::string::npos){
+		if (inputFile.is_open())
 		{
-			glm::vec3 pos(stof(a), stof(b), stof(c));	// 파일 안의 좌표들을 float형으로 바꿔서 vec3로 묶음
-			L.posBuffer.push_back(pos);	// buffer에 집어 넣어줌
-			glm::vec3 color(stof(d), stof(e), stof(f));		// 파일 안의 색깔 정보들을 vec3로 묶음
-			L.colorBuffer.push_back(color);	// color buffer에 집어 넣어줌
-			L.sizeBuffer.push_back(stof(g));		// 파일 안의 크기 정보를 size buffer에 집어 넣어줌
+			// flush current drawing before load file
+			L.posBuffer.clear();
+			L.colorBuffer.clear();
+			L.sizeBuffer.clear();
+
+			std::string a, b, c, d, e, f, g;
+			while (inputFile >> a >> b >> c >> d >> e >> f >> g)
+			{
+				glm::vec3 pos(stof(a), stof(b), stof(c));	// 파일 안의 좌표들을 float형으로 바꿔서 vec3로 묶음
+				L.posBuffer.push_back(pos);	// buffer에 집어 넣어줌
+				glm::vec3 color(stof(d), stof(e), stof(f));		// 파일 안의 색깔 정보들을 vec3로 묶음
+				L.colorBuffer.push_back(color);	// color buffer에 집어 넣어줌
+				L.sizeBuffer.push_back(stof(g));		// 파일 안의 크기 정보를 size buffer에 집어 넣어줌
+			}
+			inputFile.close();
 		}
-		inputFile.close();
+	}
+	else {
+		return;
 	}
 }
