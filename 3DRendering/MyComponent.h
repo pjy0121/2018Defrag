@@ -38,15 +38,39 @@ namespace MyComponent
 	{
 		glLineWidth(1.0f);
 		glBegin(GL_LINES);
-		glColor3f(0.0, 1.0, 0.0);	// Green Y
-		glVertex3f(0.0, 0.0, 0.0);
-		glVertex3f(0.0, 10.0, 0.0);
-		glColor3f(1.0, 0.0, 0.0);	// Red X
-		glVertex3f(0.0, 0.0, 0.0);
-		glVertex3f(10.0, 0.0, 0.0);
-		glColor3f(0.0, 0.0, 1.0);	// Blue Z
-		glVertex3f(0.0, 0.0, 0.0);
-		glVertex3f(0.0, 0.0, 10.0);
+		glColor3f(0.0f, 1.0f, 0.0f);	// Green Y
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 10.0f, 0.0f);
+		glColor3f(1.0f, 0.0f, 0.0f);	// Red X
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(10.0f, 0.0f, 0.0f);
+		glColor3f(0.0f, 0.0f, 1.0f);	// Blue Z
+		glVertex3f(0.0f, 0.0f, 0.0f);
+		glVertex3f(0.0f, 0.0f, 10.0f);
+		glEnd();
+	}
+
+	void drawGridSystem()
+	{
+		glLineWidth(1.0f);
+		glBegin(GL_LINES);
+		glColor3f(0.2f, 0.2f, 0.2f);
+		
+		for (float i = 0.0f; i <= 0.85f; i += 0.05f)
+		{
+			glVertex3f(0.0f, 0.0f, i);
+			glVertex3f(0.8f, 0.0f, i);
+
+			glVertex3f(i, 0.0f, 0.0f);
+			glVertex3f(i, 0.0f, 0.8f);
+
+			glVertex3f(0.0f, 0.0f, -i);
+			glVertex3f(0.8f, 0.0f, -i);
+
+			glVertex3f(i, 0.0f, 0.0f);
+			glVertex3f(i, 0.0f, -0.8f);
+
+		}
 		glEnd();
 	}
 
@@ -205,6 +229,13 @@ namespace MyComponent
 	{
 		// 현재 위치 포인터 그리기
 		glPointSize(L.currentPos.z * 15 + 20.0f);	// 포인터 사이즈 조절
+
+		float z = L.currentPos.z * 10;
+		char* zPtr;
+		sprintf(zPtr, "%.1f", z);
+
+		renderBitmapCharacter(L.currentPos.x + 0.1f, L.currentPos.y, L.currentPos.z, GLUT_BITMAP_TIMES_ROMAN_24, zPtr);
+
 		drawPoint(L.currentPos, glm::vec3(1.0f, 1.0f, 1.0f));
 	}
 
