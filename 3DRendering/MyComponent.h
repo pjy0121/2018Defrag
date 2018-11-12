@@ -267,4 +267,78 @@ namespace MyComponent
 			drawPoint(L.posBuffer[i], L.colorBuffer[i]);
 		}
 	}
+
+
+	////// 미리 준비한 오브젝트 그리기
+	float getDistance(glm::vec3 a, glm::vec3 b = glm::vec3(0.0f, 0.0f, 0.0f))
+	{
+		return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2) + pow(a.z - b.z, 2));
+	}
+
+	// a부터 b까지 선 그리기
+	void drawPrefabLine(glm::vec3 a, glm::vec3 b, const MyListener& L)
+	{
+		int pointCount = 120;
+		glm::vec3 directionVector;
+
+		float aSize = getDistance(a);	// 원점과의 거리 구하기
+		float bSize = getDistance(b);
+		glm::vec3 temp = a;
+
+		// a가 가까운 점, b가 먼 점
+		if (aSize > bSize)
+		{
+			a = b;
+			b = temp;
+		}
+
+		// 방향 벡터 구하기
+		directionVector = b - a;
+		directionVector /= pointCount;
+
+		glm::vec3 position = a;
+		glm::vec3 color(1.0f, 0.0f, 0.0f);
+
+		for (int i = 0; i < pointCount; i++) 
+		{
+			color = position;
+			color += 0.3f;
+				
+			position += directionVector;
+
+			L.posBuffer.push_back(position);
+			L.colorBuffer.push_back(color);
+			L.sizeBuffer.push_back(L.size);
+		}
+	}
+
+	// 정육면체 그리기
+	void drawPrefabSquare(const MyListener& L, float size)
+	{
+		int hex_x[8] = { 0,1,0,0,1,0,1,1 };
+		int hex_y[8] = { 0,0,1,0,1,1,0,1 };
+		int hex_z[8] = { 0,0,0,1,0,1,1,1 };
+		
+		glm::vec3 hexahedron[8];
+		
+		for (int i = 0; i < 8; i++) 
+		{
+			hexahedron[i].x = hex_x[i] * size;
+			hexahedron[i].y = hex_y[i] * size;
+			hexahedron[i].z = hex_z[i] * size;
+		}
+
+		drawPrefabLine(hexahedron[0], hexahedron[1], L);
+		drawPrefabLine(hexahedron[0], hexahedron[2], L);
+		drawPrefabLine(hexahedron[0], hexahedron[3], L);
+		drawPrefabLine(hexahedron[1], hexahedron[4], L);
+		drawPrefabLine(hexahedron[1], hexahedron[6], L);
+		drawPrefabLine(hexahedron[4], hexahedron[7], L);
+		drawPrefabLine(hexahedron[2], hexahedron[4], L);
+		drawPrefabLine(hexahedron[2], hexahedron[5], L);
+		drawPrefabLine(hexahedron[5], hexahedron[7], L);
+		drawPrefabLine(hexahedron[3], hexahedron[5], L);
+		drawPrefabLine(hexahedron[3], hexahedron[6], L);
+		drawPrefabLine(hexahedron[6], hexahedron[7], L);
+	}
 }
