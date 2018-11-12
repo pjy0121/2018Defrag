@@ -8,10 +8,8 @@
 namespace MyComponent
 {
 	glm::vec3 center(0.0f, 0.0f, 0.0f);
-	float rotationDegreeX = 0.0f;
-	float rotationDegreeY = 0.0f;
-	float rotationDegreeZ = 0.0f;
-	float scaleSize = 1.0f;
+	glm::vec3 rotationDegree(0.0f, 0.0f, 0.0f);
+	float scaleSize = 1.2f;
 
 	// 폰트 그리기(화면에 텍스트 넣기)
 	void renderBitmapCharacter(float x, float y, float z, void *font, char *string)
@@ -54,22 +52,22 @@ namespace MyComponent
 	{
 		glLineWidth(1.0f);
 		glBegin(GL_LINES);
-		glColor3f(0.2f, 0.2f, 0.2f);
-		
-		for (float i = 0.0f; i <= 0.85f; i += 0.05f)
+
+		glColor3f(0.4f, 0.4f, 0.4f);
+
+		for (float i = 0.0f; i <= 1.25f; i += 0.1f)
 		{
 			glVertex3f(0.0f, 0.0f, i);
-			glVertex3f(0.8f, 0.0f, i);
+			glVertex3f(1.2f, 0.0f, i);
 
 			glVertex3f(i, 0.0f, 0.0f);
-			glVertex3f(i, 0.0f, 0.8f);
+			glVertex3f(i, 0.0f, 1.2f);
 
 			glVertex3f(0.0f, 0.0f, -i);
-			glVertex3f(0.8f, 0.0f, -i);
+			glVertex3f(1.2f, 0.0f, -i);
 
 			glVertex3f(i, 0.0f, 0.0f);
-			glVertex3f(i, 0.0f, -0.8f);
-
+			glVertex3f(i, 0.0f, -1.2f);
 		}
 		glEnd();
 	}
@@ -184,51 +182,80 @@ namespace MyComponent
 	void drawMode2()
 	{
 		////// 그림 그리는 부분
-		renderBitmapCharacter(-0.6f, 0.8f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "File");
+		// 파일 입출력
+		renderBitmapCharacter(-0.75f, 0.8f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "File");
 		glColor3f(0.5f, 0.5f, 0.5f);	// 회
-		drawSquare(-0.6f, 0.55f, 0.15f, 0.2f);
-		renderBitmapCharacter(-0.6f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Load File");
+		drawSquare(-0.75f, 0.55f, 0.15f, 0.2f);
+		renderBitmapCharacter(-0.745f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Load File");
 
 		glColor3f(0.5f, 0.5f, 0.5f);	// 회
-		drawSquare(-0.44f, 0.55f, 0.15f, 0.2f);
-		renderBitmapCharacter(-0.44f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Save File");
+		drawSquare(-0.59f, 0.55f, 0.15f, 0.2f);
+		renderBitmapCharacter(-0.585f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Save File");
 
-		renderBitmapCharacter(-0.1f, 0.8f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Rotation");
+
+		// 방향키
+		glColor3f(0.5f, 0.5f, 0.5f);	// 회
+		drawSquare(-0.6f, 0.15f, 0.1f, 0.13f);
+		renderBitmapCharacter(-0.56f, 0.2f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "^");
+
+		glColor3f(0.5f, 0.5f, 0.5f);	// 회
+		drawSquare(-0.75f, -0.05f, 0.1f, 0.13f);
+		renderBitmapCharacter(-0.72f, 0.0f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "<");
+
+		renderBitmapCharacter(-0.62f, 0.0f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Position");
+
+		glColor3f(0.5f, 0.5f, 0.5f);	// 회
+		drawSquare(-0.45f, -0.05f, 0.1f, 0.13f);
+		renderBitmapCharacter(-0.41f, 0.0f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, ">");
+
+		glColor3f(0.5f, 0.5f, 0.5f);	// 회
+		drawSquare(-0.6f, -0.25f, 0.1f, 0.13f);
+		renderBitmapCharacter(-0.56f, -0.2f, 0.0f, GLUT_BITMAP_HELVETICA_18, "V");
+
+
+		// 회전
+		renderBitmapCharacter(0.06f, 0.8f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Rotation");
 		glColor3f(1.0f, 0.0f, 0.0f);	// 빨
-		drawSquare(-0.1f, 0.55f, 0.1f, 0.2f);
-		drawSquare(0.01f, 0.55f, 0.1f, 0.2f);
-		renderBitmapCharacter(-0.06f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "+");
-		renderBitmapCharacter(0.05f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "-");
-		renderBitmapCharacter(-0.1f, 0.58f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "X Rotation");
+		drawSquare(0.06f, 0.55f, 0.1f, 0.2f);
+		drawSquare(0.17f, 0.55f, 0.1f, 0.2f);
+		renderBitmapCharacter(0.1f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "+");
+		renderBitmapCharacter(0.21f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "-");
+		renderBitmapCharacter(0.09f, 0.58f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "X Rotation");
 
 		glColor3f(0.0f, 1.0f, 0.0f);	// 초
-		drawSquare(0.2f, 0.55f, 0.1f, 0.2f);
-		drawSquare(0.31f, 0.55f, 0.1f, 0.2f);
-		renderBitmapCharacter(0.24f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "+");
-		renderBitmapCharacter(0.35f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "-");
-		renderBitmapCharacter(0.2f, 0.58f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Y Rotation");
+		drawSquare(0.3f, 0.55f, 0.1f, 0.2f);
+		drawSquare(0.41f, 0.55f, 0.1f, 0.2f);
+		renderBitmapCharacter(0.34f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "+");
+		renderBitmapCharacter(0.45f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "-");
+		renderBitmapCharacter(0.33f, 0.58f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Y Rotation");
 
 		glColor3f(0.0f, 0.0f, 1.0f);	// 파
-		drawSquare(0.5f, 0.55f, 0.1f, 0.2f);
-		drawSquare(0.61f, 0.55f, 0.1f, 0.2f);
-		renderBitmapCharacter(0.54f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "+");
-		renderBitmapCharacter(0.65f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "-");
-		renderBitmapCharacter(0.5f, 0.58f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Z Rotation");
+		drawSquare(0.54f, 0.55f, 0.1f, 0.2f);
+		drawSquare(0.65f, 0.55f, 0.1f, 0.2f);
+		renderBitmapCharacter(0.58f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "+");
+		renderBitmapCharacter(0.69f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "-");
+		renderBitmapCharacter(0.57f, 0.58f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Z Rotation");
 		
+		glColor3f(0.5f, 0.7f, 0.5f);	// 카키
+		drawSquare(0.06f, 0.46f, 0.69f, 0.08f);
+		renderBitmapCharacter(0.36f, 0.48f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Clear");
+
+
+		// 배율
 		renderBitmapCharacter(0.6f, 0.0f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Object Size");
 		glColor3f(0.5f, 0.5f, 0.5f);	// 회
-		drawSquare(0.6f, 0.15f, 0.15f, 0.2f);
-		renderBitmapCharacter(0.67f, 0.25f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "+");
+		drawSquare(0.64f, 0.12f, 0.11f, 0.15f);
+		renderBitmapCharacter(0.68f, 0.19f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "+");
 
 		glColor3f(0.5f, 0.5f, 0.5f);	// 회
-		drawSquare(0.6f, -0.35f, 0.15f, 0.2f);
-		renderBitmapCharacter(0.67f, -0.25f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "-");
+		drawSquare(0.64f, -0.25f, 0.11f, 0.15f);
+		renderBitmapCharacter(0.68f, -0.18f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "-");
 	}
 
 	void drawPointer(const MyListener& L)
 	{
 		// 현재 위치 포인터 그리기
-		glPointSize(L.currentPos.z * 15 + 20.0f);	// 포인터 사이즈 조절
+		glPointSize(L.currentPos.z * 15 + 15.0f);	// 포인터 사이즈 조절
 
 		float z = L.currentPos.z * 10;
 		char* zPtr;
@@ -244,15 +271,17 @@ namespace MyComponent
 	{
 		glLineWidth(10.0f);
 		glPointSize(L.size);
+		
 		glTranslatef(center.x, center.y, center.z);
 
-		glRotatef(30 + rotationDegreeX, 1.0f, 0.0f, 0.0f);
-		glRotatef(-30 + rotationDegreeY, 0.0f, 1.0f, 0.0f);
-		glRotatef(rotationDegreeZ, 0.0f, 0.0f, 1.0f);
-
+		glRotatef(30 + rotationDegree.x, 1.0f, 0.0f, 0.0f);
+		glRotatef(-30 + rotationDegree.y, 0.0f, 1.0f, 0.0f);
+		glRotatef(rotationDegree.z, 0.0f, 0.0f, 1.0f);
+		
 		glScalef(scaleSize, scaleSize, scaleSize);	// 확대 및 축소
 	
 		////// 그림 그리는 부분
+		drawGridSystem();
 		drawAxes();
 		// drawHex();
 
@@ -262,7 +291,7 @@ namespace MyComponent
 		// 파일이 없으면 빈 화면에서 시작
 		for (int i = 0; i < L.posBuffer.size(); i++)
 		{
-			glPointSize(L.posBuffer[i].z * 15 + 20.0f);
+			glPointSize(L.posBuffer[i].z * 15 + 15.0f);
 
 			drawPoint(L.posBuffer[i], L.colorBuffer[i]);
 		}
@@ -313,7 +342,7 @@ namespace MyComponent
 	}
 
 	// 정육면체 그리기
-	void drawPrefabSquare(const MyListener& L, float size)
+	void drawPrefabHexahedron(const MyListener& L, float size)
 	{
 		int hex_x[8] = { 0,1,0,0,1,0,1,1 };
 		int hex_y[8] = { 0,0,1,0,1,1,0,1 };
