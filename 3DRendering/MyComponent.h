@@ -23,7 +23,7 @@ namespace MyComponent
 		}
 	}
 
-	void drawPoint(glm::vec3 pos, glm::vec3 color)
+	void drawPoint(glm::vec3 pos, glm::vec4 color)
 	{
 		glBegin(GL_POINTS);
 		glColor3fv(&color[0]);
