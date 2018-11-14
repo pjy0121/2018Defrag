@@ -340,6 +340,22 @@ namespace MyComponent
 			L.sizeBuffer.push_back(L.size);
 		}
 	}
+	
+	// draw tri
+	void  draw_tri(glm::vec3 P_1, glm::vec3 P_2, glm::vec3 P_3, const MyListener& L) {
+		drawPrefabLine(P_1, P_2, L);
+		drawPrefabLine(P_2, P_3, L);
+		drawPrefabLine(P_3, P_1, L);
+	}
+	// draw sq
+	void draw_sq(glm::vec3 P_1, glm::vec3 P_2, glm::vec3 P_3, glm::vec3 P_4, const MyListener& L) {
+		drawPrefabLine(P_1, P_2, L);
+		drawPrefabLine(P_2, P_3, L);
+		drawPrefabLine(P_3, P_4, L);
+		drawPrefabLine(P_4, P_1, L);
+	}
+	// draw cir // center != unitvec
+
 
 	// 정육면체 그리기
 	void drawPrefabHexahedron(const MyListener& L, float size)
@@ -370,4 +386,75 @@ namespace MyComponent
 		drawPrefabLine(hexahedron[3], hexahedron[6], L);
 		drawPrefabLine(hexahedron[6], hexahedron[7], L);
 	}
+	// 정사면체
+	void darw_regular_tetrahedron(const MyListener& L, float size) {
+		int tet_x[4] = { 1,0,0,1 };
+		int tet_y[4] = { 0,1,0,1 };
+		int tet_z[4] = { 0,0,1,1 };
+
+		glm::vec3 tetrahedron[4];
+
+		for (int i = 0; i < 4; i++)
+		{
+			tetrahedron[i].x = tet_x[i] * size;
+			tetrahedron[i].y = tet_y[i] * size;
+			tetrahedron[i].z = tet_z[i] * size;
+		}
+		draw_tri(tetrahedron[0], tetrahedron[1], tetrahedron[2],L);
+		draw_tri(tetrahedron[0], tetrahedron[1], tetrahedron[3], L);
+		draw_tri(tetrahedron[1], tetrahedron[2], tetrahedron[3], L);
+		draw_tri(tetrahedron[0], tetrahedron[2], tetrahedron[3], L);
+	}
+	// 정팔면체
+	void draw_regular_octahedron(const MyListener& L, float size) {
+		float hex_x[6] = { 0.5,  1,0.5,  0,0.5,0.5};
+		float hex_y[6] = { 0  ,0.5,0.5,0.5,0.5,  1};
+		float hex_z[6] = { 0.5,0.5,  0,0.5,  1,0.5};
+
+		glm::vec3 hexahedron[6];
+		for (int i = 0; i < 6; i++)
+		{
+			hexahedron[i].x = hex_x[i] * size;
+			hexahedron[i].y = hex_y[i] * size;
+			hexahedron[i].z = hex_z[i] * size;
+		}
+		draw_tri(hexahedron[0], hexahedron[1], hexahedron[4], L);
+		draw_tri(hexahedron[0], hexahedron[1], hexahedron[2], L);
+		draw_tri(hexahedron[0], hexahedron[4], hexahedron[3], L);
+		draw_tri(hexahedron[0], hexahedron[2], hexahedron[3], L);
+
+		draw_tri(hexahedron[5], hexahedron[1], hexahedron[4], L);
+		draw_tri(hexahedron[5], hexahedron[1], hexahedron[2], L);
+		draw_tri(hexahedron[5], hexahedron[4], hexahedron[3], L);
+		draw_tri(hexahedron[5], hexahedron[2], hexahedron[3], L);
+	}
+
+	// 2d circle x,z
+	void draw_cir(glm::vec3 center,float radi, const MyListener& L) {
+		
+		
+		float two_Pi_radi = 2 * 3.141592 * radi;
+		float pointCount = two_Pi_radi * 120;
+		glm::vec3  input_point;
+		std::vector<glm::vec3> get_point;
+		input_point.y = center.y;
+		for (int i = 0; i < pointCount; i++)
+		{
+			float angle = i * 3.141592 / 180;
+			input_point.x  = radi * cos(angle) + center.x;
+			input_point.z  = radi * sin(angle) + center.z;
+			get_point.push_back(input_point);
+		}
+		glm::vec3 color(1.0f, 0.0f, 0.0f);
+		for (int i = 0; i < pointCount; i++)
+		{
+			L.posBuffer.push_back(get_point[i]);
+			color = get_point[i];
+			color += 0.3f;
+			L.colorBuffer.push_back(color);
+			L.sizeBuffer.push_back(L.size);
+		}
+	}
+	
+
 }
