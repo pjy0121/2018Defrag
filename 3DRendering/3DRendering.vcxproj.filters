@@ -54,9 +54,6 @@
     <ClInclude Include="stdafx.h">
       <Filter>헤더 파일\Don%27t Touch</Filter>
     </ClInclude>
-    <ClInclude Include="MyObject.h">
-      <Filter>헤더 파일\OpenGL</Filter>
-    </ClInclude>
     <ClInclude Include="MyComponent.h">
       <Filter>헤더 파일\OpenGL</Filter>
     </ClInclude>
