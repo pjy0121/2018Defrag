@@ -57,3 +57,32 @@ void MyFile::loadFile(const MyListener & L)
 		inputFile.close();
 	}
 }
+
+void MyFile::loadSampleFile(const MyListener& L, const std::string fileName) 
+{
+	std::string path = ".\\files";
+	std::string filePath = path + "\\" + fileName;
+	std::ifstream inputFile(filePath);
+	
+	if (inputFile.is_open())
+	{
+		
+		// flush current drawing before load file
+		//L.posBuffer.clear();
+		//L.colorBuffer.clear();
+		//L.sizeBuffer.clear();
+		 // 버퍼 pose size
+		int getPoseSize = L.posBuffer.size();
+
+		std::string a, b, c, d, e, f, g;
+		while (inputFile >> a >> b >> c >> d >> e >> f >> g)
+		{
+			glm::vec3 pos(stof(a), stof(b), stof(c));	// 파일 안의 좌표들을 float형으로 바꿔서 vec3로 묶음
+			L.posBuffer.push_back(pos);	// buffer에 집어 넣어줌
+			glm::vec3 color(stof(d), stof(e), stof(f));		// 파일 안의 색깔 정보들을 vec3로 묶음
+			L.colorBuffer.push_back(color);	// color buffer에 집어 넣어줌
+			L.sizeBuffer.push_back(stof(g));		// 파일 안의 크기 정보를 size buffer에 집어 넣어줌
+		}
+		inputFile.close();
+	}
+}
