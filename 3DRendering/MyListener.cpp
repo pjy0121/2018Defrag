@@ -13,6 +13,7 @@ std::vector<float> MyListener::sizeBuffer;
 bool MyListener::isStop = true;
 glm::vec3 MyListener::currentPos;
 std::stack<int> MyListener::latest;
+bool MyListener::fixX = false, MyListener::fixY = false, MyListener::fixZ = false;
 
 void MyListener::onConnect(const Leap::Controller& controller) {
 	std::cout << " Connected" << std::endl;
@@ -48,6 +49,11 @@ void MyListener::onFrame(const Leap::Controller & controller)
 	{
 		glm::vec3 uni = uniform(glm::vec3(tip.x, tip.y, tip.z));	// 정규화된 좌표
 		// std::cout << uni.x << " " << uni.y << " " << uni.z << std::endl;		// 실시간 좌표 출력
+
+		// 좌표 고정 관련
+		if (fixX) uni.x = currentPos.x;
+		if (fixY) uni.y = currentPos.y;
+		if (fixZ) uni.z = currentPos.z;
 
 		if (!isStop)	// 사용자의 입력을 받고 있을 때
 		{

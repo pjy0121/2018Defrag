@@ -15,7 +15,8 @@ public:
 	static bool isStop;
 	static glm::vec3 currentPos;
 	static std::stack<int> latest;
- 
+	static bool fixX, fixY, fixZ;
+
 	virtual void onConnect(const Leap::Controller&);
 	virtual void onFrame(const Leap::Controller&);
 	virtual void onInit(const Leap::Controller&);
