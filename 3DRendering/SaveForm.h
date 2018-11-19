@@ -111,28 +111,94 @@ namespace My3DRendering {
 		}
 
 		// retrieve file list from directory
+		this->Text = DirectoryInfo(curPath).Name;
 		array<String^>^ files = Directory::GetFiles(".\\files");
+		array<String^>^ directories = Directory::GetDirectories(curPath);
 
 		fileList->Items->Add("Cancel");
+		fileList->Items->Add("..");
+
+		for (int i = 0; i < directories->Length; i++) {
+			String^ temp = DirectoryInfo(directories[i]).Name;
+			fileList->Items->Add("(dir) " + temp);
+		}
 
 		for (int i = 0; i < files->Length; i++) {
-			fileList->Items->Add(files[i]);
+			String^ temp = FileInfo(files[i]).Name;
+			if (temp->Contains(".txt"))
+				fileList->Items->Add("(file) " + temp);
 		}
 		fileList->Items->Add(newFileMenuString);
 	}
 
 	private: System::Void fileList_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e) {
 		if (e->KeyCode == Keys::Enter) {
-			String^ file = fileList->SelectedItem->ToString();
+			String^ selectedItem = fileList->SelectedItem->ToString();
+			String^ file = curPath + "\\" + fileList->SelectedItem->ToString();
 
-			if (file->Equals("Cancel")) {
+			// cancel
+			if (selectedItem->Equals("Cancel")) {
 				Response = this->StringToSTD("Cancel");
 				this->Close();
 			}
-
-			if (file->Equals(newFileMenuString)) {
-				file = ".\\files\\"+DateTime::Today.ToShortDateString() + "-" + DateTime::Now.Hour + DateTime::Now.Minute + DateTime::Now.Second +".txt";
+			// create new file
+			else if (selectedItem->Equals(newFileMenuString)) {
+				file = curPath + "\\" + DateTime::Today.ToShortDateString() + "-" + DateTime::Now.Hour + DateTime::Now.Minute + DateTime::Now.Second +".txt";
 			}
+
+			// previous directory
+			if (selectedItem->Equals("..")) {
+				curPath = Directory::GetParent(curPath)->FullName;
+				this->Text = DirectoryInfo(curPath).Name;
+
+				array<String^>^ directories = Directory::GetDirectories(curPath);
+				array<String^>^ files = Directory::GetFiles(curPath);
+				fileList->Items->Clear();
+
+				fileList->Items->Add("Cancel");
+				fileList->Items->Add("..");
+
+				for (int i = 0; i < directories->Length; i++) {
+					String^ temp = DirectoryInfo(directories[i]).Name;
+					fileList->Items->Add("(dir) " + temp);
+				}
+
+				for (int i = 0; i < files->Length; i++) {
+					String^ temp = FileInfo(files[i]).Name;
+					if (temp->Contains(".txt"))
+						fileList->Items->Add("(file) " + temp);
+				}
+				fileList->Items->Add(newFileMenuString);
+				return;
+			}
+			// select directory
+			if (selectedItem->Contains("(dir)")) {
+				curPath = curPath + "\\" + selectedItem->Replace("(dir) ", "");
+				this->Text = DirectoryInfo(curPath).Name;
+
+				array<String^>^ directories = Directory::GetDirectories(curPath);
+				array<String^>^ files = Directory::GetFiles(curPath);
+				fileList->Items->Clear();
+
+				fileList->Items->Add("Cancel");
+				fileList->Items->Add("..");
+
+				for (int i = 0; i < directories->Length; i++) {
+					String^ temp = DirectoryInfo(directories[i]).Name;
+					fileList->Items->Add("(dir) " + temp);
+				}
+
+				for (int i = 0; i < files->Length; i++) {
+					String^ temp = FileInfo(files[i]).Name;
+					if (temp->Contains(".txt"))
+						fileList->Items->Add("(file) " + temp);
+				}
+				fileList->Items->Add(newFileMenuString);
+				return;
+			}
+			// select file
+			if (selectedItem->Contains("(file)"))
+				file = file->Replace("(file) ", "");
 
 			Response = this->StringToSTD(file);
 			this->Close();
