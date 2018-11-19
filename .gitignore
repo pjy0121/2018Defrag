@@ -10,7 +10,6 @@
 3DRendering/x64/Release/Leap.dll
 *.opendb
 *.idb
-*.exe
 *.txt
 *.user
 *.ipch
