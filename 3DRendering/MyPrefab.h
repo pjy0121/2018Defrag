@@ -1,5 +1,4 @@
 #pragma once
-#pragma once
 #include <glm/glm.hpp>
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -81,6 +80,8 @@ namespace MyPrefab
 	// 정육면체 그리기
 	void drawPrefabHexahedron(float size)
 	{
+		clearPrefab();
+
 		int hex_x[8] = { 0,1,0,0,1,0,1,1 };
 		int hex_y[8] = { 0,0,1,0,1,1,0,1 };
 		int hex_z[8] = { 0,0,0,1,0,1,1,1 };
@@ -89,9 +90,9 @@ namespace MyPrefab
 
 		for (int i = 0; i < 8; i++)
 		{
-			hexahedron[i].x = hex_x[i] * size - size * 0.5;
+			hexahedron[i].x = hex_x[i] * size - size * 0.5f;
 			hexahedron[i].y = hex_y[i] * size;
-			hexahedron[i].z = hex_z[i] * size - size * 0.5;
+			hexahedron[i].z = hex_z[i] * size - size * 0.5f;
 		}
 
 		drawPrefabLine(hexahedron[0], hexahedron[1]);
@@ -110,19 +111,21 @@ namespace MyPrefab
 
 	// 정사면체 그리기
 	void drawPrefabTetrahedron(float size) {
-		float z1 = sqrt(3) / 2.f;
-		float y1 = sqrt(6) / 3.f;
-		float z2 = sqrt(3) / 6.f;
+		clearPrefab();
 
-		float tet_x_[4] = { 1, 0.5,  0, 0.5 };
-		float tet_y_[4] = { 0, 0,    0,  y1 };
-		float tet_z_[4] = { 0, z1,   0,  z2 };
+		float z1 = (float)sqrt(3) / 2.0f;
+		float y1 = (float)sqrt(6) / 3.0f;
+		float z2 = (float)sqrt(3) / 6.0f;
+
+		float tet_x_[4] = { 1.0f, 0.5f, 0.0f, 0.5f };
+		float tet_y_[4] = { 0.0f, 0.0f, 0.0f, y1 };
+		float tet_z_[4] = { 0.0f, z1, 0.0f, z2 };
 
 		glm::vec3 tetrahedron[4];
 
 		for (int i = 0; i < 4; i++)
 		{
-			tetrahedron[i].x = tet_x_[i] * size - 0.5 * size;
+			tetrahedron[i].x = tet_x_[i] * size - 0.5f * size;
 			tetrahedron[i].y = tet_y_[i] * size;
 			tetrahedron[i].z = tet_z_[i] * size - z2 * size;
 		}
@@ -137,16 +140,18 @@ namespace MyPrefab
 
 	// 정팔면체 그리기
 	void drawPrefabOctahedron(float size) {
-		float hex_x[6] = { 0.5,  1,0.5,  0,0.5,0.5 };
-		float hex_y[6] = { 0  ,0.5,0.5,0.5,0.5,  1 };
-		float hex_z[6] = { 0.5,0.5,  0,0.5,  1,0.5 };
+		clearPrefab();
+
+		float hex_x[6] = { 0.5f, 1.0f, 0.5f, 0.0f, 0.5f, 0.5f };
+		float hex_y[6] = { 0.0f, 0.5f, 0.5f, 0.5f, 0.5f, 1.0f };
+		float hex_z[6] = { 0.5f, 0.5f, 0.0f, 0.5f, 1.0f, 0.5f };
 
 		glm::vec3 octahedron[6];
 		for (int i = 0; i < 6; i++)
 		{
-			octahedron[i].x = hex_x[i] * size - 0.5 * size;
+			octahedron[i].x = hex_x[i] * size - 0.5f * size;
 			octahedron[i].y = hex_y[i] * size;
-			octahedron[i].z = hex_z[i] * size - 0.5 * size;
+			octahedron[i].z = hex_z[i] * size - 0.5f * size;
 		}
 		drawPrefabTriangle(octahedron[0], octahedron[1], octahedron[4]);
 		drawPrefabTriangle(octahedron[0], octahedron[1], octahedron[2]);
@@ -162,7 +167,7 @@ namespace MyPrefab
 	// 원 그리기
 	void drawPrefabCircle(glm::vec3 center, float radi)
 	{
-		float pointCount = 2 * 3.141592f * radi * 120.0f;
+		float pointCount = 2 * 3.141592f * radi * 200.0f;
 		glm::vec3 targetPoint;
 		std::vector<glm::vec3> targets;
 		targetPoint.y = center.y;
@@ -188,6 +193,8 @@ namespace MyPrefab
 
 	void drawPrefabCylinder(float radi)
 	{
+		clearPrefab();
+
 		for (float i = -0.5f; i < 0.5f; i += 0.03f)
 		{
 			drawPrefabCircle(glm::vec3(0.0f, i, 0.0f), radi);

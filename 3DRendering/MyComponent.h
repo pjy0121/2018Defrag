@@ -4,7 +4,6 @@
 #include <GLFW/glfw3.h>
 #include <GL/glut.h>
 #include "MyListener.h"
-#include "MyPrefab.h"
 
 namespace MyComponent
 {
@@ -333,7 +332,7 @@ namespace MyComponent
 		{
 			glPointSize(MyPrefab::posBuffer[i].z * 15 + 15.0f);
 
-			drawTransparentPoint(MyPrefab::posBuffer[i], MyPrefab::colorBuffer[i], 0.1f);
+			drawTransparentPoint(MyPrefab::posBuffer[i], MyPrefab::colorBuffer[i], 0.2f);
 		}
 	}
 }
