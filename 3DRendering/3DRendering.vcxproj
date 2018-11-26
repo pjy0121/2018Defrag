@@ -144,6 +144,7 @@
     <ClInclude Include="MyComponent.h" />
     <ClInclude Include="MyFile.h" />
     <ClInclude Include="MyListener.h" />
+    <ClInclude Include="MyPrefab.h" />
     <ClInclude Include="OpenForm.h">
       <FileType>CppForm</FileType>
     </ClInclude>

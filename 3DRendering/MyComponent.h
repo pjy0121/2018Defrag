@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <GL/glut.h>
 #include "MyListener.h"
+#include "MyPrefab.h"
 
 namespace MyComponent
 {
@@ -26,7 +27,15 @@ namespace MyComponent
 	void drawPoint(glm::vec3 pos, glm::vec3 color)
 	{
 		glBegin(GL_POINTS);
-		glColor4f(color.x, color.y, color.z, 1.0f);
+		glColor3fv(&color[0]);
+		glVertex3fv(&pos[0]);
+		glEnd();
+	}
+
+	void drawTransparentPoint(glm::vec3 pos, glm::vec3 color, float alpha)
+	{
+		glBegin(GL_POINTS);
+		glColor4f(color.x, color.y, color.z, alpha);
 		glVertex3fv(&pos[0]);
 		glEnd();
 	}
@@ -179,7 +188,7 @@ namespace MyComponent
 	}
 
 	// 오브젝트 변환 모드
-	void drawMode2()
+	void drawMode2(const std::vector<bool>& selected)
 	{
 		////// 그림 그리는 부분
 		// 파일 입출력
@@ -191,6 +200,29 @@ namespace MyComponent
 		glColor3f(0.5f, 0.5f, 0.5f);	// 회
 		drawSquare(-0.59f, 0.55f, 0.15f, 0.2f);
 		renderBitmapCharacter(-0.585f, 0.65f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Save File");
+
+
+		// prefabs
+		renderBitmapCharacter(-0.4f, 0.8f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "Figure");
+		if (selected[0]) glColor3f(0.3f, 0.8f, 0.8f);		// 청록
+		else glColor3f(0.5f, 0.7f, 0.9f);	// 연청
+		drawSquare(-0.4f, 0.64f, 0.08f, 0.11f);
+		renderBitmapCharacter(-0.37f, 0.68f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "4");
+
+		if (selected[1]) glColor3f(0.3f, 0.8f, 0.8f);		// 청록
+		else glColor3f(0.5f, 0.7f, 0.9f);	// 연청
+		drawSquare(-0.3f, 0.64f, 0.08f, 0.11f);
+		renderBitmapCharacter(-0.27f, 0.68f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "6");
+
+		if (selected[2]) glColor3f(0.3f, 0.8f, 0.8f);		// 청록
+		else glColor3f(0.5f, 0.7f, 0.9f);	// 연청
+		drawSquare(-0.2f, 0.64f, 0.08f, 0.11f);
+		renderBitmapCharacter(-0.17f, 0.68f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "8");
+
+		if (selected[3]) glColor3f(0.3f, 0.8f, 0.8f);		// 청록
+		else glColor3f(0.5f, 0.7f, 0.9f);	// 연청
+		drawSquare(-0.1f, 0.64f, 0.08f, 0.11f);
+		renderBitmapCharacter(-0.07f, 0.68f, 0.0f, GLUT_BITMAP_TIMES_ROMAN_24, "c");
 
 
 		// 방향키
@@ -288,172 +320,20 @@ namespace MyComponent
 		glLineWidth(10.0f);
 		glColor3f(1.0f, 0.0f, 0.0f);	// default color
 
-		// 파일이 없으면 빈 화면에서 시작
+		// 그림 그리기
 		for (int i = 0; i < L.posBuffer.size(); i++)
 		{
 			glPointSize(L.posBuffer[i].z * 15 + 15.0f);
 
 			drawPoint(L.posBuffer[i], L.colorBuffer[i]);
 		}
-	}
 
-
-	////// 미리 준비한 오브젝트 그리기
-	float getDistance(glm::vec3 a, glm::vec3 b = glm::vec3(0.0f, 0.0f, 0.0f))
-	{
-		return sqrt(pow(a.x - b.x, 2) + pow(a.y - b.y, 2) + pow(a.z - b.z, 2));
-	}
-
-	// a부터 b까지 선 그리기
-	void drawPrefabLine(glm::vec3 a, glm::vec3 b, const MyListener& L)
-	{
-		int pointCount = 120;
-		glm::vec3 directionVector;
-
-		float aSize = getDistance(a);	// 원점과의 거리 구하기
-		float bSize = getDistance(b);
-		glm::vec3 temp = a;
-
-		// a가 가까운 점, b가 먼 점
-		if (aSize > bSize)
+		// prefab 그리기
+		for (int i = 0; i < MyPrefab::posBuffer.size(); i++)
 		{
-			a = b;
-			b = temp;
-		}
+			glPointSize(MyPrefab::posBuffer[i].z * 15 + 15.0f);
 
-		// 방향 벡터 구하기
-		directionVector = b - a;
-		directionVector /= pointCount;
-
-		glm::vec3 position = a;
-		glm::vec3 color(1.0f, 0.0f, 0.0f);
-
-		for (int i = 0; i < pointCount; i++) 
-		{
-			color = position;
-			color += 0.3f;
-				
-			position += directionVector;
-
-			L.posBuffer.push_back(position);
-			L.colorBuffer.push_back(color);
-			L.sizeBuffer.push_back(L.size);
-		}
-	}
-	
-	// 삼각형 그리기
-	void  drawPrefabTriangle(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, const MyListener& L) {
-		drawPrefabLine(p1, p2, L);
-		drawPrefabLine(p2, p3, L);
-		drawPrefabLine(p3, p1, L);
-	}
-
-	//사각형 그리기
-	void drawPrefabSquare(glm::vec3 p1, glm::vec3 p2, glm::vec3 p3, glm::vec3 p4, const MyListener& L) {
-		drawPrefabLine(p1, p2, L);
-		drawPrefabLine(p2, p3, L);
-		drawPrefabLine(p3, p4, L);
-		drawPrefabLine(p4, p1, L);
-	}
-
-	// 정육면체 그리기
-	void drawPrefabHexahedron(const MyListener& L, float size)
-	{
-		int hex_x[8] = { 0,1,0,0,1,0,1,1 };
-		int hex_y[8] = { 0,0,1,0,1,1,0,1 };
-		int hex_z[8] = { 0,0,0,1,0,1,1,1 };
-		
-		glm::vec3 hexahedron[8];
-		
-		for (int i = 0; i < 8; i++) 
-		{
-			hexahedron[i].x = hex_x[i] * size;
-			hexahedron[i].y = hex_y[i] * size;
-			hexahedron[i].z = hex_z[i] * size;
-		}
-
-		drawPrefabLine(hexahedron[0], hexahedron[1], L);
-		drawPrefabLine(hexahedron[0], hexahedron[2], L);
-		drawPrefabLine(hexahedron[0], hexahedron[3], L);
-		drawPrefabLine(hexahedron[1], hexahedron[4], L);
-		drawPrefabLine(hexahedron[1], hexahedron[6], L);
-		drawPrefabLine(hexahedron[4], hexahedron[7], L);
-		drawPrefabLine(hexahedron[2], hexahedron[4], L);
-		drawPrefabLine(hexahedron[2], hexahedron[5], L);
-		drawPrefabLine(hexahedron[5], hexahedron[7], L);
-		drawPrefabLine(hexahedron[3], hexahedron[5], L);
-		drawPrefabLine(hexahedron[3], hexahedron[6], L);
-		drawPrefabLine(hexahedron[6], hexahedron[7], L);
-	}
-
-	// 정사면체 그리기
-	void darwPrefabTetrahedron(const MyListener& L, float size) {
-		int tet_x[4] = { 1,0,0,1 };
-		int tet_y[4] = { 0,1,0,1 };
-		int tet_z[4] = { 0,0,1,1 };
-
-		glm::vec3 tetrahedron[4];
-
-		for (int i = 0; i < 4; i++)
-		{
-			tetrahedron[i].x = tet_x[i] * size;
-			tetrahedron[i].y = tet_y[i] * size;
-			tetrahedron[i].z = tet_z[i] * size;
-		}
-		drawPrefabTriangle(tetrahedron[0], tetrahedron[1], tetrahedron[2],L);
-		drawPrefabTriangle(tetrahedron[0], tetrahedron[1], tetrahedron[3], L);
-		drawPrefabTriangle(tetrahedron[1], tetrahedron[2], tetrahedron[3], L);
-		drawPrefabTriangle(tetrahedron[0], tetrahedron[2], tetrahedron[3], L);
-	}
-
-	// 정팔면체 그리기
-	void drawPrefabOctahedron(const MyListener& L, float size) {
-		float hex_x[6] = { 0.5,  1,0.5,  0,0.5,0.5};
-		float hex_y[6] = { 0  ,0.5,0.5,0.5,0.5,  1};
-		float hex_z[6] = { 0.5,0.5,  0,0.5,  1,0.5};
-
-		glm::vec3 octahedron[6];
-		for (int i = 0; i < 6; i++)
-		{
-			octahedron[i].x = hex_x[i] * size;
-			octahedron[i].y = hex_y[i] * size;
-			octahedron[i].z = hex_z[i] * size;
-		}
-		drawPrefabTriangle(octahedron[0], octahedron[1], octahedron[4], L);
-		drawPrefabTriangle(octahedron[0], octahedron[1], octahedron[2], L);
-		drawPrefabTriangle(octahedron[0], octahedron[4], octahedron[3], L);
-		drawPrefabTriangle(octahedron[0], octahedron[2], octahedron[3], L);
-
-		drawPrefabTriangle(octahedron[5], octahedron[1], octahedron[4], L);
-		drawPrefabTriangle(octahedron[5], octahedron[1], octahedron[2], L);
-		drawPrefabTriangle(octahedron[5], octahedron[4], octahedron[3], L);
-		drawPrefabTriangle(octahedron[5], octahedron[2], octahedron[3], L);
-	}
-
-	// 원 그리기
-	void drawPrefabCircle(glm::vec3 center,float radi, const MyListener& L) 
-	{
-		float pointCount = 2 * 3.141592f * radi * 120.0f;
-		glm::vec3 targetPoint;
-		std::vector<glm::vec3> targets;
-		targetPoint.y = center.y;
-		
-		for (int i = 0; i < pointCount; i++)
-		{
-			float angle = i * 3.141592f / 180.0f;
-			targetPoint.x  = radi * cos(angle) + center.x;
-			targetPoint.z  = radi * sin(angle) + center.z;
-			targets.push_back(targetPoint);
-		}
-
-		glm::vec3 color(1.0f, 0.0f, 0.0f);
-		for (int i = 0; i < pointCount; i++)
-		{
-			L.posBuffer.push_back(targets[i]);
-			color = targets[i];
-			color += 0.3f;
-			L.colorBuffer.push_back(color);
-			L.sizeBuffer.push_back(L.size);
+			drawTransparentPoint(MyPrefab::posBuffer[i], MyPrefab::colorBuffer[i], 0.1f);
 		}
 	}
 }

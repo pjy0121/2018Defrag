@@ -57,6 +57,9 @@
     <ClInclude Include="MyComponent.h">
       <Filter>헤더 파일\OpenGL</Filter>
     </ClInclude>
+    <ClInclude Include="MyPrefab.h">
+      <Filter>헤더 파일\OpenGL</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="app.rc">
