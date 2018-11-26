@@ -9,7 +9,7 @@ namespace MyComponent
 {
 	glm::vec3 center(0.0f, 0.0f, 0.0f);
 	glm::vec3 rotationDegree(0.0f, 0.0f, 0.0f);
-	float scaleSize = 1.2f;
+	float scaleSize = 1.0f;
 
 	// 폰트 그리기(화면에 텍스트 넣기)
 	void renderBitmapCharacter(float x, float y, float z, void *font, char *string)
@@ -26,7 +26,7 @@ namespace MyComponent
 	void drawPoint(glm::vec3 pos, glm::vec3 color)
 	{
 		glBegin(GL_POINTS);
-		glColor3fv(&color[0]);
+		glColor4f(color.x, color.y, color.z, 1.0f);
 		glVertex3fv(&pos[0]);
 		glEnd();
 	}
@@ -34,7 +34,7 @@ namespace MyComponent
 	// 좌표축 그리기
 	void drawAxes()
 	{
-		glLineWidth(1.0f);
+		glLineWidth(5.0f);
 		glBegin(GL_LINES);
 		glColor3f(0.0f, 1.0f, 0.0f);	// Green Y
 		glVertex3f(0.0f, 0.0f, 0.0f);
@@ -281,8 +281,8 @@ namespace MyComponent
 		glScalef(scaleSize, scaleSize, scaleSize);	// 확대 및 축소
 	
 		////// 그림 그리는 부분
-		drawGridSystem();
-		drawAxes();
+		// drawGridSystem();
+		// drawAxes();
 		// drawHex();
 
 		glLineWidth(10.0f);
@@ -433,14 +433,14 @@ namespace MyComponent
 	// 원 그리기
 	void drawPrefabCircle(glm::vec3 center,float radi, const MyListener& L) 
 	{
-		float pointCount = 2 * 3.141592 * radi * 120;
+		float pointCount = 2 * 3.141592f * radi * 120.0f;
 		glm::vec3 targetPoint;
 		std::vector<glm::vec3> targets;
 		targetPoint.y = center.y;
 		
 		for (int i = 0; i < pointCount; i++)
 		{
-			float angle = i * 3.141592 / 180;
+			float angle = i * 3.141592f / 180.0f;
 			targetPoint.x  = radi * cos(angle) + center.x;
 			targetPoint.z  = radi * sin(angle) + center.z;
 			targets.push_back(targetPoint);
