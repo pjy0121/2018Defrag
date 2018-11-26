@@ -162,21 +162,25 @@ namespace My3DRendering {
 					return;
 				}
 				// select file
-				if (selectedItem->ImageIndex == 1)
+				if (selectedItem->ImageIndex == 1) {
+					if (!selectedItem->Text->Contains(".txt"))
+						return;
 					Response = this->StringToSTD(curPath + "\\" + selectedItem->Text);
+				}
 
 				this->Close();
 			}
 		}
 
 		private: System::Void OpenForm_Load(System::Object^  sender, System::EventArgs^  e) {
+			this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
 			// if Directory is not existed, create new one
 			if (!Directory::Exists(".\\files"))
 				Directory::CreateDirectory(".\\files");
 
 			this->updateList();
 
-			fileList->Columns->Add("파일명", 500, HorizontalAlignment::Left);
+			fileList->Columns->Add("파일명", 400, HorizontalAlignment::Left);
 			fileList->EndUpdate();
 		}
 	};
