@@ -77,7 +77,7 @@ namespace MyComponent
 	{
 		glColor3f(1.0f, 1.0f, 1.0f);
 
-		const float range = 0.3f;
+		const float range = 0.0f;
 		const float vertices[8][3] = {
 			{ range, range, range },
 			{ range, range,-range },
@@ -357,7 +357,7 @@ namespace MyComponent
 	}
 
 	// 정육면체 그리기
-	void drawPrefabHexahedron(const MyListener& L, float size)
+	void drawPrefabHexahedron(const MyListener& L, float size, float move_x,float move_y,float move_z)
 	{
 		int hex_x[8] = { 0,1,0,0,1,0,1,1 };
 		int hex_y[8] = { 0,0,1,0,1,1,0,1 };
@@ -367,9 +367,9 @@ namespace MyComponent
 		
 		for (int i = 0; i < 8; i++) 
 		{
-			hexahedron[i].x = hex_x[i] * size;
-			hexahedron[i].y = hex_y[i] * size;
-			hexahedron[i].z = hex_z[i] * size;
+			hexahedron[i].x = hex_x[i] * size + move_x;
+			hexahedron[i].y = hex_y[i] * size + move_y;
+			hexahedron[i].z = hex_z[i] * size + move_z;
 		}
 
 		drawPrefabLine(hexahedron[0], hexahedron[1], L);
@@ -388,26 +388,32 @@ namespace MyComponent
 
 	// 정사면체 그리기
 	void darwPrefabTetrahedron(const MyListener& L, float size) {
-		int tet_x[4] = { 1,0,0,1 };
-		int tet_y[4] = { 0,1,0,1 };
-		int tet_z[4] = { 0,0,1,1 };
 
+		float z1 = sqrt(3) / 2.f;
+		float y1 = sqrt(6) / 3.f;
+		float z2 = sqrt(3) / 6.f;
+		
+		float tet_x_[4] = {  1, 0.5,  0, 0.5 };
+		float tet_y_[4] = {  0, 0,    0,  y1 };
+		float tet_z_[4] = {  0, z1,   0,  z2 };
+		
 		glm::vec3 tetrahedron[4];
 
 		for (int i = 0; i < 4; i++)
 		{
-			tetrahedron[i].x = tet_x[i] * size;
-			tetrahedron[i].y = tet_y[i] * size;
-			tetrahedron[i].z = tet_z[i] * size;
+			tetrahedron[i].x = tet_x_[i] * size - 0.5;
+			tetrahedron[i].y = tet_y_[i] * size;
+			tetrahedron[i].z = tet_z_[i] * size - z2;
 		}
-		drawPrefabTriangle(tetrahedron[0], tetrahedron[1], tetrahedron[2],L);
+
+		drawPrefabTriangle(tetrahedron[0], tetrahedron[1], tetrahedron[2], L);
 		drawPrefabTriangle(tetrahedron[0], tetrahedron[1], tetrahedron[3], L);
-		drawPrefabTriangle(tetrahedron[1], tetrahedron[2], tetrahedron[3], L);
+		drawPrefabTriangle(tetrahedron[2], tetrahedron[3], tetrahedron[1], L);
 		drawPrefabTriangle(tetrahedron[0], tetrahedron[2], tetrahedron[3], L);
 	}
 
 	// 정팔면체 그리기
-	void drawPrefabOctahedron(const MyListener& L, float size) {
+	void drawPrefabOctahedron(const MyListener& L, float size, float move_x, float move_y, float move_z) {
 		float hex_x[6] = { 0.5,  1,0.5,  0,0.5,0.5};
 		float hex_y[6] = { 0  ,0.5,0.5,0.5,0.5,  1};
 		float hex_z[6] = { 0.5,0.5,  0,0.5,  1,0.5};
@@ -415,9 +421,9 @@ namespace MyComponent
 		glm::vec3 octahedron[6];
 		for (int i = 0; i < 6; i++)
 		{
-			octahedron[i].x = hex_x[i] * size;
-			octahedron[i].y = hex_y[i] * size;
-			octahedron[i].z = hex_z[i] * size;
+			octahedron[i].x = hex_x[i] * size + move_x;
+			octahedron[i].y = hex_y[i] * size + move_y;
+			octahedron[i].z = hex_z[i] * size + move_z;
 		}
 		drawPrefabTriangle(octahedron[0], octahedron[1], octahedron[4], L);
 		drawPrefabTriangle(octahedron[0], octahedron[1], octahedron[2], L);
@@ -456,4 +462,7 @@ namespace MyComponent
 			L.sizeBuffer.push_back(L.size);
 		}
 	}
+
+	// 원 기둥
+	//void drawcylinder(glm::vec3 center, float radi, const MyListener& L) {}
 }
