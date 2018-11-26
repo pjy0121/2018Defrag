@@ -172,6 +172,8 @@
   </ItemGroup>
   <ItemGroup>
     <Image Include="app.ico" />
+    <Image Include="icons\icons8-folder-80.png" />
+    <Image Include="icons\icons8-txt-80.png" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="System" />

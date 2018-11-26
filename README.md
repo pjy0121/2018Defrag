@@ -18,3 +18,6 @@ Leap motion을 활용한 모션인식 => OpenGL을 활용한 3D Object Rendering
 - D/A : X축 기준 회전시키기 빠르게/느리게
 - W/S : Y축 기준 회전시키기 빠르게/느리게
 - 숫자 : 펜 색 바꾸기(1 : 빨강, 2 : 초록, 3 : 파랑)
+
+### 실행법
+3DRendering.exe 파일과 Leap.dll, freeglut.dll 파일을 같은 디렉터리 안에 놓고 실행시킨다.

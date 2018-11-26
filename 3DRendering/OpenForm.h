@@ -13,19 +13,44 @@ namespace My3DRendering {
 	using namespace System::Drawing;
 	using namespace System::IO;
 
-	/// <summary>
-	/// OpenForm에 대한 요약입니다.
-	/// </summary>
 	public ref class OpenForm : public System::Windows::Forms::Form
 	{
 
-	private: String^ curPath;
+	private: String ^curPath, ^openPath;
 			 // convert String to unmanaged std::string
 			 std::string StringToSTD(String^ value) {
 				 msclr::interop::marshal_context context;
 				 return context.marshal_as<std::string>(value);
 			 }
-			 String^ openPath;
+			 void updateList() {
+				 fileList->Items->Clear();
+
+				 this->Text = DirectoryInfo(curPath).Name;
+				 array<FileInfo^>^ files = DirectoryInfo(curPath).GetFiles();
+				 array<DirectoryInfo^>^ directories = DirectoryInfo(curPath).GetDirectories();
+
+				 fileList->Items->Add("Cancel");
+				 fileList->Items->Add("..");
+
+				 for (int i = 0; i < directories->Length; i++) {
+					 ListViewItem^ item = gcnew ListViewItem(directories[i]->Name);
+					 item->ImageIndex = 0;
+
+					 fileList->Items->Add(item);
+				 }
+
+				 for (int i = 0; i < files->Length; i++) {
+					 ListViewItem^ item = gcnew ListViewItem(files[i]->Name);
+					 item->ImageIndex = 1;
+
+					 fileList->Items->Add(item);
+				 }
+			 }
+	public: System::Windows::Forms::ImageList^  iconList;
+	private:
+
+			 System::Windows::Forms::ListView^  fileList;
+			 System::ComponentModel::IContainer^  components;
 	public:
 		OpenForm(void)
 		{
@@ -34,7 +59,6 @@ namespace My3DRendering {
 			//TODO: 생성자 코드를 여기에 추가합니다.
 			//
 			curPath = gcnew String(".\\files");
-			openPath = gcnew String(".\\files\\output.txt");
 		}
 		property std::string Response {
 			std::string get() {
@@ -45,10 +69,8 @@ namespace My3DRendering {
 				openPath = gcnew String(value.c_str());
 			}
 		}
+
 	protected:
-		/// <summary>
-		/// 사용 중인 모든 리소스를 정리합니다.
-		/// </summary>
 		~OpenForm()
 		{
 			if (components)
@@ -56,14 +78,7 @@ namespace My3DRendering {
 				delete components;
 			}
 		}
-	private: System::Windows::Forms::ListBox^  fileList;
-	protected:
 
-	private:
-		/// <summary>
-		/// 필수 디자이너 변수입니다.
-		/// </summary>
-		System::ComponentModel::Container ^components;
 
 #pragma region Windows Form Designer generated code
 		/// <summary>
@@ -72,126 +87,97 @@ namespace My3DRendering {
 		/// </summary>
 		void InitializeComponent(void)
 		{
-			this->fileList = (gcnew System::Windows::Forms::ListBox());
+			this->components = (gcnew System::ComponentModel::Container());
+			System::ComponentModel::ComponentResourceManager^  resources = (gcnew System::ComponentModel::ComponentResourceManager(OpenForm::typeid));
+			this->iconList = (gcnew System::Windows::Forms::ImageList(this->components));
+			this->fileList = (gcnew System::Windows::Forms::ListView());
 			this->SuspendLayout();
+			// 
+			// iconList
+			// 
+			this->iconList->ImageStream = (cli::safe_cast<System::Windows::Forms::ImageListStreamer^>(resources->GetObject(L"iconList.ImageStream")));
+			this->iconList->TransparentColor = System::Drawing::Color::Transparent;
+			this->iconList->Images->SetKeyName(0, L"folderIcon");
+			this->iconList->Images->SetKeyName(1, L"txtIcon");
 			// 
 			// fileList
 			// 
-			this->fileList->FormattingEnabled = true;
-			this->fileList->ItemHeight = 12;
-			this->fileList->Location = System::Drawing::Point(13, 13);
+			this->fileList->BackColor = System::Drawing::SystemColors::Window;
+			this->fileList->Dock = System::Windows::Forms::DockStyle::Fill;
+			this->fileList->Font = (gcnew System::Drawing::Font(L"DotumChe", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+				static_cast<System::Byte>(129)));
+			this->fileList->ForeColor = System::Drawing::SystemColors::WindowText;
+			this->fileList->HeaderStyle = System::Windows::Forms::ColumnHeaderStyle::None;
+			this->fileList->Location = System::Drawing::Point(0, 0);
+			this->fileList->MultiSelect = false;
 			this->fileList->Name = L"fileList";
-			this->fileList->Size = System::Drawing::Size(259, 232);
-			this->fileList->TabIndex = 0;
+			this->fileList->ShowGroups = false;
+			this->fileList->Size = System::Drawing::Size(578, 384);
+			this->fileList->SmallImageList = this->iconList;
+			this->fileList->TabIndex = 1;
+			this->fileList->UseCompatibleStateImageBehavior = false;
+			this->fileList->View = System::Windows::Forms::View::Details;
 			this->fileList->KeyDown += gcnew System::Windows::Forms::KeyEventHandler(this, &OpenForm::fileList_KeyDown);
 			// 
 			// OpenForm
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(7, 12);
+			this->AutoScaleDimensions = System::Drawing::SizeF(10, 18);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(284, 261);
+			this->ClientSize = System::Drawing::Size(578, 384);
 			this->Controls->Add(this->fileList);
+			this->Margin = System::Windows::Forms::Padding(4);
 			this->Name = L"OpenForm";
-			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterScreen;
+			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterParent;
 			this->Text = L"Open File";
 			this->Load += gcnew System::EventHandler(this, &OpenForm::OpenForm_Load);
 			this->ResumeLayout(false);
+
 		}
 
 		#pragma endregion
+
 		private: System::Void fileList_KeyDown(System::Object^  sender, System::Windows::Forms::KeyEventArgs^  e) {
 			if (e->KeyCode == Keys::Enter) {
-				String^ selectedItem = fileList->SelectedItem->ToString();
-				String^ file = curPath + "\\" +fileList->SelectedItem->ToString();
+				ListViewItem^ selectedItem = fileList->SelectedItems[0];
 
 				// cancel
-				if (selectedItem->Equals("Cancel")) {
+				if (selectedItem->Text == "Cancel") {
 					Response = this->StringToSTD("Cancel");
 					this->Close();
 				}
 				// previous directory
-				if (selectedItem->Equals("..")) {
+				if (selectedItem->Text == "..") {
 					curPath = Directory::GetParent(curPath)->FullName;
-					this->Text = DirectoryInfo(curPath).Name;
 
-					array<String^>^ directories = Directory::GetDirectories(curPath);
-					array<String^>^ files = Directory::GetFiles(curPath);
-					fileList->Items->Clear();
+					updateList();
 
-					fileList->Items->Add("Cancel");
-					fileList->Items->Add("..");
-
-					for (int i = 0; i < directories->Length; i++) {
-						String^ temp = DirectoryInfo(directories[i]).Name;
-						fileList->Items->Add("(dir) " + temp);
-					}
-
-					for (int i = 0; i < files->Length; i++) {
-						String^ temp = FileInfo(files[i]).Name;
-						if (temp->Contains(".txt"))
-							fileList->Items->Add("(file) " + temp);
-					}
 					return;
 				}
 				// select directory
-				if (selectedItem->Contains("(dir)")) {
-					curPath = curPath + "\\" +selectedItem->Replace("(dir) ", "");
-					this->Text = DirectoryInfo(curPath).Name;
+				if (selectedItem->ImageIndex == 0) {
+					curPath = curPath + "\\" + selectedItem->Text;
 
-					array<String^>^ directories = Directory::GetDirectories(curPath);
-					array<String^>^ files = Directory::GetFiles(curPath);
-					fileList->Items->Clear();
+					updateList();
 
-					fileList->Items->Add("Cancel");
-					fileList->Items->Add("..");
-
-					for (int i = 0; i < directories->Length; i++) {
-						String^ temp = DirectoryInfo(directories[i]).Name;
-						fileList->Items->Add("(dir) " + temp);
-					}
-
-					for (int i = 0; i < files->Length; i++) {
-						String^ temp = FileInfo(files[i]).Name;
-						if (temp->Contains(".txt"))
-							fileList->Items->Add("(file) " + temp);
-					}
 					return;
 				}
 				// select file
-				if (selectedItem->Contains("(file)"))
-					file = file->Replace("(file) ", "");
+				if (selectedItem->ImageIndex == 1)
+					Response = this->StringToSTD(curPath + "\\" + selectedItem->Text);
 
-				Response = this->StringToSTD(file);
 				this->Close();
 			}
 		}
 
 		private: System::Void OpenForm_Load(System::Object^  sender, System::EventArgs^  e) {
-			fileList->Items->Clear();
-
 			// if Directory is not existed, create new one
-			if (!Directory::Exists(".\\files")) {
+			if (!Directory::Exists(".\\files"))
 				Directory::CreateDirectory(".\\files");
-			}
 
-			// retrieve file list from directory
-			this->Text = DirectoryInfo(curPath).Name;
-			array<String^>^ files = Directory::GetFiles(".\\files");
-			array<String^>^ directories = Directory::GetDirectories(".\\files");
+			this->updateList();
 
-			fileList->Items->Add("Cancel");
-			fileList->Items->Add("..");
-
-			for (int i = 0; i < directories->Length; i++) {
-				String^ temp = DirectoryInfo(directories[i]).Name;
-				fileList->Items->Add("(dir) " + temp);
-			}
-
-			for (int i = 0; i < files->Length; i++) {
-				String^ temp = FileInfo(files[i]).Name;
-				if(temp->Contains(".txt"))
-					fileList->Items->Add("(file) " + temp);
-			}
+			fileList->Columns->Add("파일명", 500, HorizontalAlignment::Left);
+			fileList->EndUpdate();
 		}
 	};
 }
