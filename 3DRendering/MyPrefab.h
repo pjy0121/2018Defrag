@@ -89,9 +89,9 @@ namespace MyPrefab
 
 		for (int i = 0; i < 8; i++)
 		{
-			hexahedron[i].x = hex_x[i] * size;
+			hexahedron[i].x = hex_x[i] * size - size * 0.5;
 			hexahedron[i].y = hex_y[i] * size;
-			hexahedron[i].z = hex_z[i] * size;
+			hexahedron[i].z = hex_z[i] * size - size * 0.5;
 		}
 
 		drawPrefabLine(hexahedron[0], hexahedron[1]);
@@ -110,22 +110,29 @@ namespace MyPrefab
 
 	// 정사면체 그리기
 	void drawPrefabTetrahedron(float size) {
-		int tet_x[4] = { 1,0,0,1 };
-		int tet_y[4] = { 0,1,0,1 };
-		int tet_z[4] = { 0,0,1,1 };
+		float z1 = sqrt(3) / 2.f;
+		float y1 = sqrt(6) / 3.f;
+		float z2 = sqrt(3) / 6.f;
+
+		float tet_x_[4] = { 1, 0.5,  0, 0.5 };
+		float tet_y_[4] = { 0, 0,    0,  y1 };
+		float tet_z_[4] = { 0, z1,   0,  z2 };
 
 		glm::vec3 tetrahedron[4];
 
 		for (int i = 0; i < 4; i++)
 		{
-			tetrahedron[i].x = tet_x[i] * size;
-			tetrahedron[i].y = tet_y[i] * size;
-			tetrahedron[i].z = tet_z[i] * size;
+			tetrahedron[i].x = tet_x_[i] * size - 0.5 * size;
+			tetrahedron[i].y = tet_y_[i] * size;
+			tetrahedron[i].z = tet_z_[i] * size - z2 * size;
 		}
+
 		drawPrefabTriangle(tetrahedron[0], tetrahedron[1], tetrahedron[2]);
 		drawPrefabTriangle(tetrahedron[0], tetrahedron[1], tetrahedron[3]);
-		drawPrefabTriangle(tetrahedron[1], tetrahedron[2], tetrahedron[3]);
+		drawPrefabTriangle(tetrahedron[2], tetrahedron[3], tetrahedron[1]);
 		drawPrefabTriangle(tetrahedron[0], tetrahedron[2], tetrahedron[3]);
+
+
 	}
 
 	// 정팔면체 그리기
@@ -137,9 +144,9 @@ namespace MyPrefab
 		glm::vec3 octahedron[6];
 		for (int i = 0; i < 6; i++)
 		{
-			octahedron[i].x = hex_x[i] * size;
+			octahedron[i].x = hex_x[i] * size - 0.5 * size;
 			octahedron[i].y = hex_y[i] * size;
-			octahedron[i].z = hex_z[i] * size;
+			octahedron[i].z = hex_z[i] * size - 0.5 * size;
 		}
 		drawPrefabTriangle(octahedron[0], octahedron[1], octahedron[4]);
 		drawPrefabTriangle(octahedron[0], octahedron[1], octahedron[2]);
