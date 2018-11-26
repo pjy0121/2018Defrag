@@ -97,12 +97,13 @@ namespace My3DRendering {
 			// fileList
 			// 
 			this->fileList->Dock = System::Windows::Forms::DockStyle::Fill;
-			this->fileList->Font = (gcnew System::Drawing::Font(L"DotumChe", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
+			this->fileList->Font = (gcnew System::Drawing::Font(L"돋움체", 12, System::Drawing::FontStyle::Bold, System::Drawing::GraphicsUnit::Point,
 				static_cast<System::Byte>(129)));
 			this->fileList->HeaderStyle = System::Windows::Forms::ColumnHeaderStyle::None;
 			this->fileList->Location = System::Drawing::Point(0, 0);
+			this->fileList->Margin = System::Windows::Forms::Padding(2, 2, 2, 2);
 			this->fileList->Name = L"fileList";
-			this->fileList->Size = System::Drawing::Size(578, 384);
+			this->fileList->Size = System::Drawing::Size(405, 256);
 			this->fileList->SmallImageList = this->iconList;
 			this->fileList->TabIndex = 1;
 			this->fileList->UseCompatibleStateImageBehavior = false;
@@ -118,12 +119,12 @@ namespace My3DRendering {
 			// 
 			// SaveForm
 			// 
-			this->AutoScaleDimensions = System::Drawing::SizeF(10, 18);
+			this->AutoScaleDimensions = System::Drawing::SizeF(7, 12);
 			this->AutoScaleMode = System::Windows::Forms::AutoScaleMode::Font;
-			this->ClientSize = System::Drawing::Size(578, 384);
+			this->ClientSize = System::Drawing::Size(405, 256);
 			this->Controls->Add(this->fileList);
-			this->Margin = System::Windows::Forms::Padding(4);
 			this->Name = L"SaveForm";
+			this->StartPosition = System::Windows::Forms::FormStartPosition::CenterParent;
 			this->Text = L"SaveForm";
 			this->Load += gcnew System::EventHandler(this, &SaveForm::SaveForm_Load);
 			this->ResumeLayout(false);
@@ -132,13 +133,14 @@ namespace My3DRendering {
 #pragma endregion
 
 	private: System::Void SaveForm_Load(System::Object^  sender, System::EventArgs^  e) {
+		this->FormBorderStyle = System::Windows::Forms::FormBorderStyle::None;
 		// if Directory is not existed, create new one
 		if (!Directory::Exists(".\\files")) {
 			Directory::CreateDirectory(".\\files");
 		}
 
 		this->updateList();
-		fileList->Columns->Add("파일명", 500, HorizontalAlignment::Left);
+		fileList->Columns->Add("파일명", 400, HorizontalAlignment::Left);
 		fileList->EndUpdate();
 	}
 
@@ -173,8 +175,11 @@ namespace My3DRendering {
 				return;
 			}
 			// select file
-			if (selectedItem->ImageIndex == 1)
+			if (selectedItem->ImageIndex == 1) {
+				if (!selectedItem->Text->Contains(".txt"))
+					return;
 				Response = this->StringToSTD(curPath + "\\" + selectedItem->Text);
+			}
 
 			this->Close();
 		}
