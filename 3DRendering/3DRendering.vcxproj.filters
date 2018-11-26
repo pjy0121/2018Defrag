@@ -90,6 +90,12 @@
     <Image Include="app.ico">
       <Filter>리소스 파일</Filter>
     </Image>
+    <Image Include="icons\icons8-folder-80.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
+    <Image Include="icons\icons8-txt-80.png">
+      <Filter>리소스 파일</Filter>
+    </Image>
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="OpenForm.resx">
